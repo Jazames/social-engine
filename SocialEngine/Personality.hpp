@@ -24,7 +24,7 @@ struct Things
 	double Effort; //Industriousness
 	double WillIncreaseOrder; //Orderliness
 	double Novelty; //Openness
-	double IntellectuallStimulation; //Intellect
+	double IntellectualStimulation; //Intellect
 };
 
 
@@ -37,6 +37,9 @@ Need to add a goal in some fashion, so that each NPC has some goals they are try
 Need to add Haidt's moral values to allow a NPC to determine what is good/bad
 
 Need to add some sort of personality integration/wisdom field that contols how much NPCs can deviate from their personality to achieve their goals. 
+	Perhaps a maturity level? 
+
+Potentially need to add dark triad traits? Perhaps these would be linked to maturity, where maturity mitigates dark triad tendancies?
 
 
 */
