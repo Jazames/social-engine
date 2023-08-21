@@ -1,18 +1,42 @@
 #pragma once
 
-struct PersonalityTraits
+#include<vector>
+
+struct Big5Traits
 {
-	double Enthusiasm = 50.0; //Extraversion
-	double Assertiveness = 50.0; //Extraversion
-	double Withdrawal = 50.0; //Neuroticism
-	double Volatility = 50.0; //Neuroticism
-	double Compassion = 50.0; //Agreeableness
-	double Politeness = 50.0; //Agreeablness
-	double Industriousness = 50.0; //Conscientiousness
-	double Orderliness = 50.0; //Conscientiousness
-	double Openness = 50.0; //Openness to Experience
-	double Intellect = 50.0; //Openness to Experience
+	//These range from 0.0 to 1.0, with 1.0 indicating a high value in this item.
+	double Enthusiasm		= 0.5; //Extraversion
+	double Assertiveness	= 0.5; //Extraversion
+	double Withdrawal		= 0.5; //Neuroticism
+	double Volatility		= 0.5; //Neuroticism
+	double Compassion		= 0.5; //Agreeableness
+	double Politeness		= 0.5; //Agreeableness
+	double Industriousness	= 0.5; //Conscientiousness
+	double Orderliness		= 0.5; //Conscientiousness
+	double Openness			= 0.5; //Openness to Experience
+	double Intellect		= 0.5; //Openness to Experience
 };
+
+struct MoralFoundations
+{
+	//These range from -1.0 to 1.0. 
+	//Negative values in these traits approximates dark triad tendencies. 
+	double care_harm			= 0.0; //higher is more care
+	double fairness_cheating	= 0.0; //higher is more fair
+	double loyalty_betrayal		= 0.0; //higher is more loyal
+	double authority_subversion = 0.0; //higher is more yielding to authority
+	double sanctity_degradation = 0.0; //higher is more sanctity
+	double liberty_oppression	= 0.0; //higher is more liberty
+};
+
+struct Personality
+{
+	Big5Traits traits;
+	MoralFoundations morals;
+	double intelligence = 1.0; // 1 = 100 IQ. 
+};
+
+
 
 //A given task/thing will have these characteristics that put a load on each personality trait. 
 struct Things
@@ -27,6 +51,53 @@ struct Things
 	double IntellectualStimulation; //Intellect
 };
 
+enum HairColor
+{
+	Blonde,
+	SandyBlonde,
+	Brown,
+	DarkBrown,
+	Black,
+	Red,
+	StrawberryRed,
+	Auburn,
+
+};
+
+struct SkinColor
+{
+	double melanin_content;
+};
+
+struct Hair
+{
+	HairColor color;
+	bool is_uniform;
+	double authority_weight;
+	double religious_weight;
+	double foreign_weight;
+	double neatness_weight;
+};
+
+struct Clothing
+{
+	uint64_t id;
+	uint64_t set_id;
+	double authority_weight;
+	double religious_weight;
+	double foreign_weight;
+	double neatness_weight;
+};
+
+struct Appearance
+{
+	uint64_t face_id;
+#ifdef RACISM
+	SkinColor skin_color;
+#endif
+	Hair hair;
+	std::vector<Clothing> clothes;
+};
 
 
 
@@ -43,4 +114,7 @@ Potentially need to add dark triad traits? Perhaps these would be linked to matu
 
 
 */
+
+
+
 
