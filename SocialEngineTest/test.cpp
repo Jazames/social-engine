@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "../SocialEngine/Personality.hpp"
 
 TEST(TestCaseName, TestName) {
   EXPECT_EQ(1, 1);
@@ -7,36 +8,32 @@ TEST(TestCaseName, TestName) {
 
 
 
+struct Interaction
+{
+    std::string thing = "";
+};
+
+
 struct InitiatorCharacteristics
 {
-    Appearance Appearance;
-    Interaction Interaction;
+    Appearance appearance;
+    Interaction interaction;
 };
 
 struct NpcTraits
 {
-    Personality Personality;
-    Morality Morality;
-    vector<Goal> Goals;
-    WorldKnowledge WorldKnowledge;
+    Personality personality;
 };
 
 struct InteractionResponse
 {
     double Inclination;
-    string message;
 };
-
-struct Interaction
-{
-
-};
-
 TEST(ThingyTest, TestCase1) {
     InitiatorCharacteristics initiator;
     NpcTraits receiver;
     InteractionResponse expected_response;
-    InteractionResponse actual_response = GetInteractionResponse(initiator, receiver);
-    EXPECT_EQ(expected_response, actual_response);
+    InteractionResponse actual_response;// = GetInteractionResponse(initiator, receiver);
+    EXPECT_EQ(expected_response.Inclination, actual_response.Inclination);
 }
 

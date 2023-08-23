@@ -66,7 +66,7 @@ struct Knowledge {
 
 enum DialogueResponseDirection {
     Greet,
-    Insult,
+    Spurn, //Synonmy for insult
     Fight,
     Ignore,
     Wilt,
@@ -149,7 +149,7 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     }
     else
     {
-        return DialogueResponseDirection::Insult;
+        return DialogueResponseDirection::Spurn;
     }
 
 }
@@ -162,7 +162,7 @@ DialogueResponseDirection get_dialogue_response_direction(Disposition dispositio
     // Stub: Placeholder logic. Actual logic to determine dialogue direction goes here.
     // E.g., if disposition is neutral, personality is aggressive, and dialogue type is greeting, set direction to "Insult".
 
-    return direction;
+    return Greet;
 }
 
 // Update character's knowledge based on the interaction
@@ -277,6 +277,7 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
         return get_npc_statement_response(dialogue, appearance, personality, knowledge);
     default:
         std::cout << "Unknown classification." << std::endl;
+        return "Wut?";
     }
 }
 
