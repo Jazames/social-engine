@@ -82,6 +82,8 @@ enum DialogueResponseDirection {
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
 {
+    //This assumes everyone has the same knowledge about the cultural weight of specific clothing being worn. Which is probably fine for now.
+
     double disposition_weight = 0.15;
     double hair_weight = disposition_weight;
     double clothing_weight = disposition_weight * 1.6;
@@ -115,6 +117,41 @@ Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personal
     }
 
     return disposition;
+}
+
+DialogueResponseDirection get_greeting_response_direction(Disposition disposition, Personality personality)
+{
+    double d = disposition.friendliness;
+
+    if (d > 0)
+    {
+        d *= (1.0 + (personality.morals.loyalty_betrayal * 0.3));
+    }
+
+    d += personality.traits.Agreeableness() * 0.4;
+    d += personality.traits.Extraversion() * 0.2;
+    d -= personality.traits.Neuroticism() * 0.25;
+    d += personality.traits.Orderliness * 0.05;
+    d += personality.morals.care_harm * 0.15;
+    d += personality.morals.authority_subversion * 0.05;
+
+    if (d > 0.2)
+    {
+        return DialogueResponseDirection::Greet;
+    }
+    else if (d > -0.6)
+    {
+        return DialogueResponseDirection::Ignore;
+    }
+    else if (d < -2.0)
+    {
+        return DialogueResponseDirection::Fight;
+    }
+    else
+    {
+        return DialogueResponseDirection::Insult;
+    }
+
 }
 
 // Get the direction of dialogue response based on disposition, personality, and dialogue type
@@ -168,7 +205,7 @@ DialogueType get_classification(std::string dialogue)
 
 std::string get_npc_greeting_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Greeting);
+    DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
     std::string response = get_response(direction, dialogue, DialogueType::Greeting);
     

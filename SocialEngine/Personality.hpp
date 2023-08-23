@@ -15,6 +15,12 @@ struct Big5Traits
 	double Orderliness		= 0.5; //Conscientiousness
 	double Openness			= 0.5; //Openness to Experience
 	double Intellect		= 0.5; //Openness to Experience
+
+	double Extraversion() { return (Enthusiasm + Assertiveness) / 2; }
+	double Neuroticism() { return (Withdrawal + Volatility) / 2; }
+	double Agreeableness() { return (Compassion + Politeness) / 2; }
+	double Conscientiousness() { return (Industriousness + Orderliness) / 2; }
+	double OpennessToExperience() { return (Openness + Intellect) / 2; }
 };
 
 struct MoralFoundations
