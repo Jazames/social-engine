@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "llama", "..\llamaCpp\build\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ggml", "..\llamaCpp\build\visual-studio\ggml.vcxproj", "{6387BC80-BAEF-3E4B-A7CA-EE19E161023D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "..\llamaCpp\build\visual-studio\common\common.vcxproj", "{EA3E4338-A685-3EA1-84DC-3DD128561010}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -87,6 +89,22 @@ Global
 		{6387BC80-BAEF-3E4B-A7CA-EE19E161023D}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
 		{6387BC80-BAEF-3E4B-A7CA-EE19E161023D}.RelWithDebInfo|x86.ActiveCfg = RelWithDebInfo|x64
 		{6387BC80-BAEF-3E4B-A7CA-EE19E161023D}.RelWithDebInfo|x86.Build.0 = RelWithDebInfo|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Debug|x64.ActiveCfg = Debug|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Debug|x64.Build.0 = Debug|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Debug|x86.ActiveCfg = Debug|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Debug|x86.Build.0 = Debug|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.MinSizeRel|x86.ActiveCfg = MinSizeRel|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.MinSizeRel|x86.Build.0 = MinSizeRel|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Release|x64.ActiveCfg = Release|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Release|x64.Build.0 = Release|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Release|x86.ActiveCfg = Release|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.Release|x86.Build.0 = Release|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.RelWithDebInfo|x86.ActiveCfg = RelWithDebInfo|x64
+		{EA3E4338-A685-3EA1-84DC-3DD128561010}.RelWithDebInfo|x86.Build.0 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,14 +4,8 @@
 #include <iostream>
 #include <algorithm>
 #include "Personality.hpp"
+#include "classifier.h"
 
-enum DialogueType {
-    Greeting,
-    Insult,
-    Request,
-    Question,
-    Statement
-};
 
 struct Disposition {
     double friendliness = 0; // 0 is neutral, negative is bad, positive is good.
@@ -199,6 +193,9 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
 DialogueType get_classification(std::string dialogue)
 {
+
+
+
     return DialogueType::Greeting;
 }
 
@@ -281,9 +278,30 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
     }
 }
 
+const char* DialogueTypeNames[] = {
+    "IncoherentRambling",
+    "Greeting",
+    "Insult",
+    "Request",
+    "Question",
+    "Statement"
+};
+
+const char* ToString(DialogueType type) {
+    if (type < 0 || type >= 6) {
+        return "InvalidDialogueType";
+    }
+    return DialogueTypeNames[type];
+}
+
 
 int main()
 {
+    std::string dialogue = "Go hang a salami, I'm a lasagna hog.";// "Are you a whore?";
+    auto classification = Classifier::getInstance().processDialogue(dialogue);
+    std::cout << "Dialogue to classify: " << dialogue << std::endl;
+    std::cout << "Classification is: " <<  ToString(classification) << std::endl;
+
     std::cout << "Hello World!\n";
 
     std::string player_words = "Go hang a salami, I'm a lasagna hog.";
