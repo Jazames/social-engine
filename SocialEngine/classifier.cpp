@@ -8,7 +8,9 @@
 
 
 
-DialogueType Classifier::processDialogue(const std::string& dialogue) {
+DialogueType Classifier::processDialogue(const std::string& dialogue)
+{
+    //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     llama_context* ctx = context.get();
 

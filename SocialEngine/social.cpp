@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "Personality.hpp"
 #include "classifier.h"
+#include "responder.h"
 
 
 struct Disposition {
@@ -193,10 +194,7 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
 DialogueType get_classification(std::string dialogue)
 {
-
-
-
-    return DialogueType::Greeting;
+    return Classifier::getInstance().processDialogue(dialogue);
 }
 
 
@@ -297,12 +295,13 @@ const char* ToString(DialogueType type) {
 
 int main()
 {
-    std::string dialogue = "Go hang a salami, I'm a lasagna hog.";// "Are you a whore?";
+    std::cout << "Warming up." << std::endl;
+    std::string dialogue = "howdy.";// "Are you a whore?";
     auto classification = Classifier::getInstance().processDialogue(dialogue);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " <<  ToString(classification) << std::endl;
+    std::cout << "Finished warming up" << std::endl << std::endl;
 
-    std::cout << "Hello World!\n";
 
     std::string player_words = "Go hang a salami, I'm a lasagna hog.";
     Appearance player_appearance = Appearance();
