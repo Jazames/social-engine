@@ -166,11 +166,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="classifier.cpp" />
+    <ClCompile Include="responder.cpp" />
     <ClCompile Include="social.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classifier.h" />
     <ClInclude Include="Personality.hpp" />
+    <ClInclude Include="responder.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>

@@ -173,10 +173,9 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
 std::string get_response(DialogueResponseDirection direction, std::string dialogue, DialogueType dialogueType)
 {
-    std::string response;
+    //TODO: incorporate direction and get Age/Enthusiasm
+    std::string response = Responder::get_instance().get_response(dialogue, Young, Mild);
 
-    // Stub: Placeholder logic. Actual logic to generate a response string goes here.
-    // E.g., if direction is "Greet", return "Hello, traveler!"
 
     return response;
 }
@@ -194,7 +193,7 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
 DialogueType get_classification(std::string dialogue)
 {
-    return Classifier::getInstance().processDialogue(dialogue);
+    return Classifier::getInstance().get_classification(dialogue);
 }
 
 
@@ -297,9 +296,11 @@ int main()
 {
     std::cout << "Warming up." << std::endl;
     std::string dialogue = "howdy.";// "Are you a whore?";
-    auto classification = Classifier::getInstance().processDialogue(dialogue);
+    auto classification = Classifier::getInstance().get_classification(dialogue);
+    std::string response = Responder::get_instance().get_response(dialogue, Young, Mild);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " <<  ToString(classification) << std::endl;
+    std::cout << "Response is: " << response << std::endl;
     std::cout << "Finished warming up" << std::endl << std::endl;
 
 
@@ -307,10 +308,12 @@ int main()
     Appearance player_appearance = Appearance();
     Personality npc_personality = Personality();
     Knowledge knowledge = Knowledge();
-    std::string response = get_npc_response(player_words, player_appearance, npc_personality, knowledge);
+    response = get_npc_response(player_words, player_appearance, npc_personality, knowledge);
 
     std::cout << "NPC response: " << response << std::endl;
 
+    std::cout << std::endl << "Doing Test" << std::endl;
+    Responder::get_instance().do_test();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
@@ -323,3 +326,8 @@ int main()
 //   4. Use the Error List window to view errors
 //   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
 //   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+
+
+
+
+

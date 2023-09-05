@@ -9,14 +9,15 @@
 
 
 
-std::string Responder::get_response(const std::string& dialogue, Age age, Enthsiasm enthusiasm)
+std::string Responder::get_response(const std::string& dialogue, Age age, Enthusiasm enthusiasm)
 {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     llama_context* ctx = context.get();
 
     std::vector<llama_token> tokens_list;
-    tokens_list = llama_tokenize(ctx, build_prompt(dialogue), true);
+    std::string prompt = build_prompt(dialogue, age, enthusiasm);
+    tokens_list = llama_tokenize(ctx, prompt, true);
 
     const int max_context_size = llama_n_ctx(ctx);
     const int max_tokens_list_size = max_context_size - 4;
@@ -74,6 +75,7 @@ std::string Responder::get_response(const std::string& dialogue, Age age, Enthsi
         new_token_id = llama_sample_token_greedy(ctx, &candidates_p);
 
         response += llama_token_to_piece(ctx, new_token_id);
+        //std::cout << response;
 
         // Check for the specific words in response
 
@@ -90,16 +92,36 @@ std::string Responder::get_response(const std::string& dialogue, Age age, Enthsi
     return "..."; // This should be replaced with your actual logic
 }
 
-std::string Responder::build_prompt(const std::string& dialogue)
+void Responder::do_test()
+{
+    std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
+    std::array<Age, 5> ages = { Old, Middle, Young, Teen, Child };
+    std::array<Enthusiasm, 4> emotions = { Enthusiastic, Mild, Reluctant, Angry };
+
+    for (auto d : dialogues)
+    {
+        for (auto a : ages)
+        {
+            for (auto e : emotions)
+            {
+                std::cout << "Prompt: " << build_prompt(d, a, e) << std::endl;
+                std::cout << "Response: " << get_response(d, a, e) << std::endl << std::endl;
+            }
+        }
+    }
+}
+
+std::string Responder::build_prompt(const std::string& dialogue, Age age, Enthusiasm enthusiasm)
 {
     std::ostringstream string_builder;
     string_builder << prompt_instructions
-        << disposition_instructions
-        << age_instructions
-        << end_prompt
+        << disposition_instructions << emotion[enthusiasm]
+        << age_instructions << generation[age]
+        << end_prompt << dialogue
         << end_chat;
 
     std::string result = string_builder.str();
+    return result;
 }
 
 

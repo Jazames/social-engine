@@ -24,7 +24,7 @@ public:
         return instance;
     }
 
-    DialogueType processDialogue(const std::string& dialogue);
+    DialogueType get_classification(const std::string& dialogue);
 
 private:
     llama_model* model;
