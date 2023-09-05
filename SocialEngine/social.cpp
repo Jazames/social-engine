@@ -174,7 +174,7 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
 std::string get_response(DialogueResponseDirection direction, std::string dialogue, DialogueType dialogueType)
 {
     //TODO: incorporate direction and get Age/Enthusiasm
-    std::string response = Responder::get_instance().get_response(dialogue, Young, Mild);
+    std::string response = Responder::get_instance().get_response(dialogue, Teen, Enthusiastic);
 
 
     return response;
@@ -295,13 +295,15 @@ const char* ToString(DialogueType type) {
 int main()
 {
     std::cout << "Warming up." << std::endl;
-    std::string dialogue = "howdy.";// "Are you a whore?";
+    std::string dialogue = "Hello.";// "Are you a whore?";
     auto classification = Classifier::getInstance().get_classification(dialogue);
     std::string response = Responder::get_instance().get_response(dialogue, Young, Mild);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " <<  ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;
     std::cout << "Finished warming up" << std::endl << std::endl;
+
+
 
 
     std::string player_words = "Go hang a salami, I'm a lasagna hog.";

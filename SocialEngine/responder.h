@@ -5,6 +5,7 @@
 #pragma warning(disable: 4996)
 #include "common.h"
 #include "llama.h"
+#include "util.h"
 
 enum Age
 {
@@ -38,6 +39,9 @@ private:
     llama_model* model;
     llama_context_params ctx_params;
     gpt_params params;
+    llama_context* context;
+
+    const std::string model_file_path;
 
     const std::string prompt_instructions = " <s>[INST] <<SYS>>\nPlease return the greeting with another greeting. Do not ask any questions. ";
     const std::string disposition_instructions = "The reply should be ";

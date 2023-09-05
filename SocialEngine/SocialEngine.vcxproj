@@ -72,7 +72,7 @@
     <ExternalIncludePath>..\llamaCpp\common;..\llamaCpp;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ExternalIncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;$(ExternalIncludePath)</ExternalIncludePath>
+    <ExternalIncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;../llamaCpp;../llamaCpp/common;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,7 +114,7 @@
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\build\visual-studio\llama.dir\Debug;C:\Users\James\source\repos\SocialEngine\llamaCpp\build\visual-studio\ggml.dir\Debug;..\llamaCpp\build\visual-studio\common\common.dir\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\build\visual-studio\llama.dir\Release;..\llamaCpp\build\visual-studio\ggml.dir\Release;..\llamaCpp\build\visual-studio\common\common.dir\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ggml.lib;common.lib;llama.obj;%(AdditionalDependencies);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublasLt.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
     </Link>
     <CudaLink>
@@ -157,7 +157,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cublas.lib;cudart.lib;%(AdditionalDependencies);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublasLt.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>ggml.lib;common.lib;llama.obj;cublas.lib;cudart.lib;%(AdditionalDependencies);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublasLt.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\llamaCpp\build\visual-studio\common\common.dir\Release;..\llamaCpp\build\visual-studio\llama.dir\Release;..\llamaCpp\build\visual-studio\ggml.dir\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CudaLink>
       <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>

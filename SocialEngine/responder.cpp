@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 
 
 
@@ -50,7 +51,7 @@ std::string Responder::get_response(const std::string& dialogue, Age age, Enthus
 
         if (llama_eval(ctx, tokens_list.data(), int(tokens_list.size()), llama_get_kv_cache_token_count(ctx), params.n_threads))
         {
-            return "...";
+            return response + "...";
         }
 
         tokens_list.clear();
@@ -89,26 +90,29 @@ std::string Responder::get_response(const std::string& dialogue, Age age, Enthus
     }
 
     // ... (use the provided code for processing the dialogue but replace initialization and deinitialization parts)
-    return "..."; // This should be replaced with your actual logic
+    return response + "..."; // This should be replaced with your actual logic
 }
 
 void Responder::do_test()
 {
+    float temp = params.temp;
+    params.temp = 0.0;
     std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
     std::array<Age, 5> ages = { Old, Middle, Young, Teen, Child };
     std::array<Enthusiasm, 4> emotions = { Enthusiastic, Mild, Reluctant, Angry };
 
-    for (auto d : dialogues)
+    for (auto e : emotions)
     {
         for (auto a : ages)
         {
-            for (auto e : emotions)
+            for (auto d : dialogues)
             {
-                std::cout << "Prompt: " << build_prompt(d, a, e) << std::endl;
+                std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Age: " << std::setw(10) << generation[a]<< "Emotion: " << std::setw(10) << emotion[e] << std::endl;
                 std::cout << "Response: " << get_response(d, a, e) << std::endl << std::endl;
             }
         }
     }
+    params.temp = temp;
 }
 
 std::string Responder::build_prompt(const std::string& dialogue, Age age, Enthusiasm enthusiasm)
@@ -128,6 +132,8 @@ std::string Responder::build_prompt(const std::string& dialogue, Age age, Enthus
 Responder::Responder() {
     // Initialization logic
     params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
+    params.n_threads = 8;
+    params.temp = 0.4;
 
     // init LLM
     llama_backend_init(params.numa);
