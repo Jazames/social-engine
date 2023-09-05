@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classifier.h" />
+    <ClInclude Include="dialogue.h" />
     <ClInclude Include="Personality.hpp" />
     <ClInclude Include="responder.h" />
     <ClInclude Include="util.h" />

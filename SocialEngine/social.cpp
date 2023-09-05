@@ -6,73 +6,7 @@
 #include "Personality.hpp"
 #include "classifier.h"
 #include "responder.h"
-
-
-struct Disposition {
-    double friendliness = 0; // 0 is neutral, negative is bad, positive is good.
-
-    /*
-    Disposition()
-    {
-        this->friendliness = 0.5;
-    }
-
-    Disposition(double friendliness)
-    {
-        this->friendliness = friendliness;
-    }
-    */
-};
-
-struct CharacterKnowledge
-{
-    uint64_t face_id = 0;
-    Disposition disposition;
-    //TODO: Put some stuff here about things it's known this guy has/can do.
-};
-
-struct Knowledge {
-    std::vector<uint64_t> known_faces() const
-    {
-        //TODO: Might need to cache this
-        std::vector<uint64_t> face_ids;
-        for (const CharacterKnowledge& person : known_people)  // Use a reference to avoid copying
-        {
-            face_ids.push_back(person.face_id);
-        }
-        return face_ids;
-    }
-
-    CharacterKnowledge get_character(uint64_t face_id) const
-    {
-        auto iterator = std::find_if(known_people.begin(), known_people.end(), [face_id](const CharacterKnowledge& item)
-        {
-            return item.face_id == face_id;
-        });
-
-        if (iterator != known_people.end()) {
-            return (*iterator);
-        }
-
-        return CharacterKnowledge();
-    }
-    std::vector<CharacterKnowledge> known_people;
-};
-
-enum DialogueResponseDirection {
-    Greet,
-    Spurn, //Synonmy for insult
-    Fight,
-    Ignore,
-    Wilt,
-    Accept,
-    Disagree,
-    Answer,
-    Lie,
-    Assist,
-    Decline,
-    Sabotage
-};
+#include "dialogue.h"
 
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
@@ -171,10 +105,10 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
 }
 
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::string get_response(DialogueResponseDirection direction, std::string dialogue, DialogueType dialogueType)
+std::string get_response(DialogueResponseDirection direction, std::string dialogue, Maturity maturity, DialogueType dialogueType)
 {
     //TODO: incorporate direction and get Age/Enthusiasm
-    std::string response = Responder::get_instance().get_response(dialogue, Teen, Enthusiastic);
+    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction);
 
 
     return response;
@@ -201,7 +135,7 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, DialogueType::Greeting);
+    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Greeting);
     
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -211,7 +145,7 @@ std::string get_npc_insult_response(std::string dialogue, Appearance appearance,
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Insult);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, DialogueType::Insult);
+    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Insult);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -221,7 +155,7 @@ std::string get_npc_statement_response(std::string dialogue, Appearance appearan
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Statement);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, DialogueType::Statement);
+    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Statement);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -297,7 +231,7 @@ int main()
     std::cout << "Warming up." << std::endl;
     std::string dialogue = "Hello.";// "Are you a whore?";
     auto classification = Classifier::getInstance().get_classification(dialogue);
-    std::string response = Responder::get_instance().get_response(dialogue, Young, Mild);
+    std::string response = Responder::get_instance().get_response(dialogue, Young, Greet);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " <<  ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;
@@ -310,6 +244,7 @@ int main()
     Appearance player_appearance = Appearance();
     Personality npc_personality = Personality();
     Knowledge knowledge = Knowledge();
+    npc_personality.maturity = Young;
     response = get_npc_response(player_words, player_appearance, npc_personality, knowledge);
 
     std::cout << "NPC response: " << response << std::endl;

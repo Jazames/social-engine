@@ -35,11 +35,25 @@ struct MoralFoundations
 	double liberty_oppression	= 0.0; //higher is more liberty
 };
 
+
+enum Maturity
+{
+	Wise,
+	Boomer,
+	Parent,
+	Adult,
+	Young,
+	Teen,
+	Child
+};
+
+
 struct Personality
 {
 	Big5Traits traits;
 	MoralFoundations morals;
 	double intelligence = 1.0; // 1 = 100 IQ. 
+	Maturity maturity;
 };
 
 
