@@ -108,7 +108,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
 
 Classifier::Classifier() {
     // Initialization logic
-    params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b\\ggml-model-q4_0.gguf";
+    params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
 
     // init LLM
     llama_backend_init(params.numa);

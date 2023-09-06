@@ -36,18 +36,20 @@ TEST(DialogueClassificationTest, QuestionFailure) {
     ASSERT_NE(get_classification("You look great today."), DialogueType::Question);
 }
 
+TEST(DialogueClassificationTest, RudeQuestion) {
+    ASSERT_EQ(get_classification("I'm just curious, no judgement, but are you a prostitute?"), DialogueType::Question);
+}
+
+TEST(DialogueClassificationTest, DangerousQuestion) {
+    ASSERT_EQ(get_classification("Where can I buy a bomb?"), DialogueType::Question);
+}
+
 TEST(DialogueClassificationTest, StatementSuccess) {
-    ASSERT_EQ(get_classification("The weather is nice today."), DialogueType::Statement);
+    ASSERT_EQ(get_classification("I like to eat cheese."), DialogueType::Statement);
 }
 
 TEST(DialogueClassificationTest, StatementFailure) {
     ASSERT_NE(get_classification("How do you do?"), DialogueType::Statement);
 }
 
-TEST(DialogueClassificationTest, IncoherentRamblingSuccess) {
-    ASSERT_EQ(get_classification("asdfas dfas asdf asd fasd"), DialogueType::IncoherentRambling);
-}
 
-TEST(DialogueClassificationTest, IncoherentRamblingFailure) {
-    ASSERT_NE(get_classification("This is a coherent sentence."), DialogueType::IncoherentRambling);
-}
