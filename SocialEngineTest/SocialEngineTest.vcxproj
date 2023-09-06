@@ -27,16 +27,24 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 12.2.props" />
+  </ImportGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ExternalIncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\include;../llamaCpp/;../llamaCpp/common/;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="classifier_integration_test.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -45,6 +53,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\llamaCpp\build\visual-studio\common\common.vcxproj">
+      <Project>{ea3e4338-a685-3ea1-84dc-3dd128561010}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\llamaCpp\build\visual-studio\ggml.vcxproj">
+      <Project>{6387bc80-baef-3e4b-a7ca-ee19e161023d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\llamaCpp\build\visual-studio\llama.vcxproj">
+      <Project>{9e05a0bf-b2f0-3a57-a9ee-94c40263ebf3}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SocialEngine\SocialEngine.vcxproj">
       <Project>{90a1bcea-4e79-4225-a3b2-4a3b119b30af}</Project>
     </ProjectReference>
@@ -74,18 +91,50 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.2/include"</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard_C>stdc11</LanguageStandard_C>
+      <UseFullPaths>false</UseFullPaths>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;GGML_USE_K_QUANTS;GGML_USE_CUBLAS;GGML_CUDA_DMMV_X=32;GGML_CUDA_MMV_Y=1;K_QUANTS_PER_ITERATION=2;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug";_DEBUG;_CONSOLE</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>../llamaCpp/common/;../llamaCpp/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;GGML_USE_K_QUANTS;GGML_USE_CUBLAS;GGML_CUDA_DMMV_X=32;GGML_CUDA_MMV_Y=1;K_QUANTS_PER_ITERATION=2;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\examples;C:\Users\James\source\repos\SocialEngine\llamaCpp\common\.;C:\Users\James\source\repos\SocialEngine\llamaCpp\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\examples;C:\Users\James\source\repos\SocialEngine\llamaCpp\common\.;C:\Users\James\source\repos\SocialEngine\llamaCpp\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>..\SocialEngine\x64\Debug\;..\llamaCpp\build\visual-studio\Release;..\llamaCpp\build\visual-studio\ggml.dir\Release;..\llamaCpp\build\visual-studio\common\common.dir\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>llama.lib;common.lib;ggml.lib;social.obj;classifier.obj;responder.obj;%(AdditionalDependencies);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublasLt.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
     </Link>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -105,19 +154,49 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GGML_USE_K_QUANTS;GGML_USE_CUBLAS;GGML_CUDA_DMMV_X=32;GGML_CUDA_MMV_Y=1;K_QUANTS_PER_ITERATION=2;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <PreprocessorDefinitions>X64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../llamaCpp/common/;../llamaCpp/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;GGML_USE_K_QUANTS;GGML_USE_CUBLAS;GGML_CUDA_DMMV_X=32;GGML_CUDA_MMV_Y=1;K_QUANTS_PER_ITERATION=2;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\examples;C:\Users\James\source\repos\SocialEngine\llamaCpp\common\.;C:\Users\James\source\repos\SocialEngine\llamaCpp\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\James\source\repos\SocialEngine\llamaCpp\examples;C:\Users\James\source\repos\SocialEngine\llamaCpp\common\.;C:\Users\James\source\repos\SocialEngine\llamaCpp\.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <AdditionalLibraryDirectories>..\SocialEngine\x64\Release\;..\llamaCpp\build\visual-studio\Release;..\llamaCpp\build\visual-studio\ggml.dir\Release;..\llamaCpp\build\visual-studio\common\common.dir\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>llama.lib;common.lib;ggml.lib;social.obj;classifier.obj;responder.obj;%(AdditionalDependencies);C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\lib\x64\cublasLt.lib;cudadevrt.lib;cudart_static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
     </Link>
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
   </ItemDefinitionGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
