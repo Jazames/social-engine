@@ -6,8 +6,6 @@
 #include <vector>
 
 
-
-
 DialogueType Classifier::get_classification(const std::string& dialogue)
 {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.

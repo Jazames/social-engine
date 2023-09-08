@@ -31,9 +31,10 @@ private:
     llama_context_params ctx_params;
     gpt_params params;
 
-    const std::string prompt_instructions = "Identify whether the given sentences are greetings, insults, questions, requests, or statements. Use only a single word from this list: insult, question, greeting, request, statement.\n\n\
+    const std::string prompt_instructions = "Identify whether the given sentences are greetings, insults, questions, requests, or statements. Rude language does not automatically make something an insult. \
+        Use only a single word from this list: insult, question, greeting, request, statement.\n\n\
         Good Morning.\n Greeting\n\nWhere are the canned oranges ?\nQuestion\n\nCan you help me get that balloon down ?\nRequest\n\nIm looking for a new sword.Where can I buy a soward ?\nQuestion\n\nI don't like cheese.\nStatement\n\n\
-        Howdy.\nGreeting\n\nYour mom goes to college.\nInsult\n\nWhere can I find a whore ? \nQuestion\n\nCan I have a room for the night and a hot meal ? \nRequest\n\nThis place is boring.\nStatement\n\n";
+        Are you a prostitute?\nQuestion.\n\nHowdy.\nGreeting\n\nYour mom goes to college.\nInsult\n\nWhere can I find a whore? \nQuestion\n\nCan I have a room for the night and a hot meal ? \nRequest\n\nThis place is boring.\nStatement\n\n";
 
     Classifier();
 

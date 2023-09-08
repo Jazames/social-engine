@@ -130,7 +130,6 @@ DialogueType get_classification(std::string dialogue)
     return Classifier::getInstance().get_classification(dialogue);
 }
 
-
 std::string get_npc_greeting_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);

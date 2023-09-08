@@ -40,6 +40,22 @@ TEST(DialogueClassificationTest, RudeQuestion) {
     ASSERT_EQ(get_classification("I'm just curious, no judgement, but are you a prostitute?"), DialogueType::Question);
 }
 
+TEST(DialogueClassificationTest, RuderQuestion) {
+    ASSERT_EQ(get_classification("I mean no disrespect, but are you a prostitute?"), DialogueType::Question);
+}
+
+TEST(DialogueClassificationTest, RudeToInsultingQuestion) {
+    ASSERT_EQ(get_classification("Are you a prostitute?"), DialogueType::Insult);
+}
+
+TEST(DialogueClassificationTest, InsultingQuestion) {
+    ASSERT_EQ(get_classification("Are you a whore?"), DialogueType::Insult);
+}
+
+TEST(DialogueClassificationTest, InsultingQuestion2) {
+    ASSERT_EQ(get_classification("Are you a retard?"), DialogueType::Insult);
+}
+
 TEST(DialogueClassificationTest, DangerousQuestion) {
     ASSERT_EQ(get_classification("Where can I buy a bomb?"), DialogueType::Question);
 }

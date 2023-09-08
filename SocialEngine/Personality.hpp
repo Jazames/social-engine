@@ -35,7 +35,6 @@ struct MoralFoundations
 	double liberty_oppression	= 0.0; //higher is more liberty
 };
 
-
 enum Maturity
 {
 	Wise,
@@ -47,28 +46,12 @@ enum Maturity
 	Child
 };
 
-
 struct Personality
 {
 	Big5Traits traits;
 	MoralFoundations morals;
 	double intelligence = 1.0; // 1 = 100 IQ. 
 	Maturity maturity;
-};
-
-
-
-//A given task/thing will have these characteristics that put a load on each personality trait. 
-struct Things
-{
-	double Reward; //Extraversion Composite
-	double Risk; //Neuroticism Composite
-	double Needfulness; //Compassion
-	double ValuesMatch; //Politeness
-	double Effort; //Industriousness
-	double WillIncreaseOrder; //Orderliness
-	double Novelty; //Openness
-	double IntellectualStimulation; //Intellect
 };
 
 enum HairColor
