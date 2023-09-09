@@ -11,6 +11,7 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality);
 
 DialogueResponseDirection get_greeting_response_direction(Disposition disposition, Personality personality);
+DialogueResponseDirection get_insult_response_direction(Disposition disposition, Personality personality);
 
 
 

@@ -87,6 +87,11 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
 
 }
 
+DialogueResponseDirection get_insult_response_direction(Disposition disposition, Personality personality)
+{
+    return InsultVerb;
+}
+
 // Get the direction of dialogue response based on disposition, personality, and dialogue type
 DialogueResponseDirection get_dialogue_response_direction(Disposition disposition, Personality personality, DialogueType dialogueType)
 {

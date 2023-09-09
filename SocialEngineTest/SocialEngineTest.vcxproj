@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="classifier_test.cpp" />
-    <ClCompile Include="disposition_direction_test.cpp" />
+    <ClCompile Include="greeting_disposition_direction_test.cpp" />
+    <ClCompile Include="insult_disposition_direction_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -53,6 +54,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\llamaCpp\build\visual-studio\common\common.vcxproj">
