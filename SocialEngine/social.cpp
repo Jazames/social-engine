@@ -68,6 +68,10 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     {
         return DialogueResponseDirection::Greet;
     }
+    else if (d > -0.2)
+    {
+        return DialogueResponseDirection::Wilt;
+    }
     else if (d > -0.6)
     {
         return DialogueResponseDirection::Ignore;
@@ -78,7 +82,7 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     }
     else
     {
-        return DialogueResponseDirection::Spurn;
+        return DialogueResponseDirection::InsultVerb;
     }
 
 }
@@ -142,9 +146,9 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
 
 std::string get_npc_insult_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Insult);
+    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::InsultNoun);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Insult);
+    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::InsultNoun);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -194,7 +198,7 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
     {
     case Greeting:
         return get_npc_greeting_response(dialogue, appearance, personality, knowledge);
-    case Insult:
+    case InsultNoun:
         return get_npc_insult_response(dialogue, appearance, personality, knowledge);
     case Request:
         return get_npc_request_response(dialogue, appearance, personality, knowledge);

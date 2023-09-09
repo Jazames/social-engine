@@ -10,7 +10,7 @@
 enum DialogueType {
     IncoherentRambling, //This is used in the case of error.
     Greeting,
-    Insult,
+    InsultNoun,
     Request,
     Question,
     Statement

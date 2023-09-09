@@ -44,7 +44,7 @@
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="classifier_integration_test.cpp" />
+    <ClCompile Include="classifier_test.cpp" />
     <ClCompile Include="disposition_direction_test.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">

@@ -37,7 +37,7 @@ private:
 
     std::string build_prompt(const std::string& dialogue, Maturity maturity, DialogueResponseDirection response_direction);
     std::string build_greet_prompt(const std::string& dialogue, Maturity maturity);
-    std::string build_spurn_prompt(const std::string& dialogue, Maturity maturity); //Synonym for insult
+    std::string build_insult_prompt(const std::string& dialogue, Maturity maturity); //Synonym for insult
     std::string build_fight_prompt(const std::string& dialogue, Maturity maturity);
     std::string build_ignore_prompt(const std::string& dialogue, Maturity maturity);
     std::string build_wilt_prompt(const std::string& dialogue, Maturity maturity);

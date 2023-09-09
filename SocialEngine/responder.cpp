@@ -99,7 +99,7 @@ void Responder::do_test()
     params.temp = 0.0;
     std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
     std::array<Maturity, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
-    std::array<DialogueResponseDirection, 3> responses = { Greet, Spurn, Ignore };
+    std::array<DialogueResponseDirection, 3> responses = { Greet, InsultVerb, Ignore };
 
     for (auto m : test_maturities)
     {
@@ -119,7 +119,7 @@ std::string Responder::build_prompt(const std::string& dialogue, Maturity maturi
     std::array<BuildResponseFunction, 12> prompt_functions =
     {
         &Responder::build_greet_prompt,     //Greet,
-        &Responder::build_spurn_prompt,     //Spurn, //Synonmy for insult
+        &Responder::build_insult_prompt,     //insult, //Synonmy for insult
         &Responder::build_fight_prompt,     //Fight,
         &Responder::build_ignore_prompt,    //Ignore,
         &Responder::build_wilt_prompt,      //Wilt,
@@ -148,7 +148,7 @@ std::string Responder::build_greet_prompt(const std::string& dialogue, Maturity 
     return result;
 }
 
-std::string Responder::build_spurn_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_insult_prompt(const std::string& dialogue, Maturity maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue with an insult. Do not ask any questions. "

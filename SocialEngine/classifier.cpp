@@ -77,7 +77,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
             return Greeting;
         }
         else if (response.find("Insult") != std::string::npos) {
-            return Insult;
+            return InsultNoun;
         }
         else if (response.find("Question") != std::string::npos) {
             return Question;
