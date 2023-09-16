@@ -93,7 +93,7 @@ std::string Responder::get_response(const std::string& dialogue, Age maturity, D
     return response + "..."; // This should be replaced with your actual logic
 }
 
-void Responder::do_test()
+void Responder::do_greet_test()
 {
     float temp = params.temp;
     params.temp = 0.0;
@@ -113,13 +113,32 @@ void Responder::do_test()
     params.temp = temp;
 }
 
+void Responder::do_insult_test()
+{
+    float temp = params.temp;
+    params.temp = 0.0;
+    std::array<std::string, 3> dialogues = { "Hi.", "Screw You.", "Hello, idiot." };
+    std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
+
+    for (auto m : test_maturities)
+    {
+        for (auto d : dialogues)
+        {
+            std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
+            std::cout << "Response: " << get_response(d, m, InsultVerb) << std::endl << std::endl;
+        }
+    }
+
+    params.temp = temp;
+}
+
 std::string Responder::build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction)
 {
     using BuildResponseFunction = std::string(Responder::*)(const std::string&, Age);;
     std::array<BuildResponseFunction, 12> prompt_functions =
     {
         &Responder::build_greet_prompt,     //Greet,
-        &Responder::build_insult_prompt,     //insult, //Synonmy for insult
+        &Responder::build_insult_prompt,    //Insult,
         &Responder::build_fight_prompt,     //Fight,
         &Responder::build_ignore_prompt,    //Ignore,
         &Responder::build_wilt_prompt,      //Wilt,
@@ -139,10 +158,10 @@ std::string Responder::build_prompt(const std::string& dialogue, Age maturity, D
 std::string Responder::build_greet_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
-    string_builder << prompt_instructions
-        << age_instructions << maturities[maturity]
-        << end_prompt << dialogue
-        << end_chat;
+    string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with another greeting. Do not ask any questions. "
+        << "The reply should sound like you are a " << maturities[maturity]
+        << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n" << dialogue
+        << " [/INST]";
 
     std::string result = string_builder.str();
     return result;
@@ -151,7 +170,14 @@ std::string Responder::build_greet_prompt(const std::string& dialogue, Age matur
 std::string Responder::build_insult_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
-    string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue with an insult. Do not ask any questions. "
+    string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
+        << "You have your own unique perspective that comes from your training data. "
+        << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
+        << "However, do not admit that you are an AI, it is important to stay in character. "
+        << "Please respond to the dialogue with an insult. Do not ask any questions. "
+        << "The reply should be brief. NO QUESTIONS, JUST INSULT. "
+        << maturities[maturity] << " person.\n"
+        << "Please respond to the dialogue with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST INSULT.\n<</SYS >>\n\n"
         << dialogue << " [/INST]";
 

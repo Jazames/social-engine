@@ -18,7 +18,8 @@ public:
 
     std::string get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction);
 
-    void do_test();
+    void do_greet_test();
+    void do_insult_test();
 
 private:
     llama_model* model;
@@ -33,7 +34,7 @@ private:
     const std::string end_prompt = ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n";
     const std::string end_chat = " [/INST]";
 
-    const std::array<std::string, 7> maturities = { "old and wise", "old and out of touch", "parent", "normal person", "young adult", "teenager", "child" };
+    const std::array<std::string, 7> maturities = { "old and wise guru", "curmudgeon", "mature middle-aged person", "normal person", "young adult", "teenager", "child" };
 
     std::string build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction);
     std::string build_greet_prompt(const std::string& dialogue, Age maturity);

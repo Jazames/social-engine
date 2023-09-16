@@ -49,5 +49,5 @@ int main()
     std::cout << "NPC response: " << response << std::endl;
 
     std::cout << std::endl << "Doing Test" << std::endl;
-    Responder::get_instance().do_test();
+    Responder::get_instance().do_insult_test();
 }
