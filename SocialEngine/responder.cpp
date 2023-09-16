@@ -10,7 +10,7 @@
 
 
 
-std::string Responder::get_response(const std::string& dialogue, Maturity maturity, DialogueResponseDirection response_direction)
+std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction)
 {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
@@ -98,7 +98,7 @@ void Responder::do_test()
     float temp = params.temp;
     params.temp = 0.0;
     std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
-    std::array<Maturity, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
+    std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
     std::array<DialogueResponseDirection, 3> responses = { Greet, InsultVerb, Ignore };
 
     for (auto m : test_maturities)
@@ -113,9 +113,9 @@ void Responder::do_test()
     params.temp = temp;
 }
 
-std::string Responder::build_prompt(const std::string& dialogue, Maturity maturity, DialogueResponseDirection response_direction)
+std::string Responder::build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction)
 {
-    using BuildResponseFunction = std::string(Responder::*)(const std::string&, Maturity);;
+    using BuildResponseFunction = std::string(Responder::*)(const std::string&, Age);;
     std::array<BuildResponseFunction, 12> prompt_functions =
     {
         &Responder::build_greet_prompt,     //Greet,
@@ -136,7 +136,7 @@ std::string Responder::build_prompt(const std::string& dialogue, Maturity maturi
     return response;
 }
 
-std::string Responder::build_greet_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_greet_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << prompt_instructions
@@ -148,7 +148,7 @@ std::string Responder::build_greet_prompt(const std::string& dialogue, Maturity 
     return result;
 }
 
-std::string Responder::build_insult_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_insult_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue with an insult. Do not ask any questions. "
@@ -159,7 +159,7 @@ std::string Responder::build_insult_prompt(const std::string& dialogue, Maturity
     return result;
 }
 
-std::string Responder::build_fight_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_fight_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue by declaring a fight. Do not ask any questions. "
@@ -170,7 +170,7 @@ std::string Responder::build_fight_prompt(const std::string& dialogue, Maturity 
     return result;
 }
 
-std::string Responder::build_ignore_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_ignore_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -181,7 +181,7 @@ std::string Responder::build_ignore_prompt(const std::string& dialogue, Maturity
     return result;
 }
 
-std::string Responder::build_wilt_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_wilt_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -192,7 +192,7 @@ std::string Responder::build_wilt_prompt(const std::string& dialogue, Maturity m
     return result;
 }
 
-std::string Responder::build_accept_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_accept_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -203,7 +203,7 @@ std::string Responder::build_accept_prompt(const std::string& dialogue, Maturity
     return result;
 }
 
-std::string Responder::build_disagree_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_disagree_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -214,7 +214,7 @@ std::string Responder::build_disagree_prompt(const std::string& dialogue, Maturi
     return result;
 }
 
-std::string Responder::build_answer_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_answer_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -225,7 +225,7 @@ std::string Responder::build_answer_prompt(const std::string& dialogue, Maturity
     return result;
 }
 
-std::string Responder::build_lie_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_lie_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -236,7 +236,7 @@ std::string Responder::build_lie_prompt(const std::string& dialogue, Maturity ma
     return result;
 }
 
-std::string Responder::build_assist_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_assist_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
@@ -247,7 +247,7 @@ std::string Responder::build_assist_prompt(const std::string& dialogue, Maturity
     return result;
 }
 
-std::string Responder::build_decline_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_decline_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue by declining it. Do not ask any questions. "
@@ -258,7 +258,7 @@ std::string Responder::build_decline_prompt(const std::string& dialogue, Maturit
     return result;
 }
 
-std::string Responder::build_sabotage_prompt(const std::string& dialogue, Maturity maturity)
+std::string Responder::build_sabotage_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with sabatoge. Do not ask any questions. "

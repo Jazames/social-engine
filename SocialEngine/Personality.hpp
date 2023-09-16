@@ -35,7 +35,7 @@ struct MoralFoundations
 	double liberty_oppression	= 0.0; //higher is more liberty
 };
 
-enum Maturity
+enum Age
 {
 	Wise,
 	Boomer,
@@ -51,7 +51,8 @@ struct Personality
 	Big5Traits traits;
 	MoralFoundations morals;
 	double intelligence = 1.0; // 1 = 100 IQ. 
-	Maturity maturity;
+	double maturity; // 0 is toddler, 1 is fully integrated and wise.
+	Age age;
 };
 
 enum HairColor

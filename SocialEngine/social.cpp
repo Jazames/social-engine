@@ -84,12 +84,64 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     {
         return DialogueResponseDirection::InsultVerb;
     }
-
 }
 
 DialogueResponseDirection get_insult_response_direction(Disposition disposition, Personality personality)
 {
-    return InsultVerb;
+    double upstanding = 0.0;
+    upstanding += 0.3 * personality.maturity;
+    upstanding += 0.3 * personality.morals.care_harm;
+    upstanding -= 0.1 * personality.traits.Volatility;
+    upstanding += 0.1 * personality.traits.Politeness;
+    upstanding += 0.1 * personality.traits.Orderliness;
+    
+    if (upstanding > 0.35)
+    {
+        double contrarian = 0.0;
+        contrarian -= 0.3 * personality.traits.Withdrawal;
+        contrarian += 0.1 * personality.morals.liberty_oppression;
+        contrarian -= 0.2 * personality.morals.loyalty_betrayal;
+        contrarian += 0.2 * personality.traits.Assertiveness;
+        if (contrarian > 0)
+        {
+            return Greet;
+        }
+        else
+        {
+            return Ignore;
+        }
+    }
+    else
+    {
+        double weak = 0.0;
+        weak += 0.5 * personality.traits.Withdrawal;
+        weak -= 0.3 * personality.traits.Assertiveness;
+        weak -= 0.2 * personality.morals.liberty_oppression;
+        if (weak > 0)
+        {
+            return Wilt;
+        }
+
+        double angery = 0.0;
+        angery += 0.3 * personality.traits.Volatility;
+        angery -= 0.3 * personality.traits.Agreeableness();
+        angery -= 0.3 * personality.morals.care_harm;
+        angery += 0.5 * personality.morals.loyalty_betrayal;
+        angery -= 0.2 * personality.morals.fairness_cheating;
+
+        if (angery > 0.5)
+        {
+            return Fight;
+        }
+        else if (angery > 0)
+        {
+            return InsultVerb;
+        }
+        else
+        {
+            return Ignore;
+        }
+    }
 }
 
 // Get the direction of dialogue response based on disposition, personality, and dialogue type
@@ -114,7 +166,7 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
 }
 
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::string get_response(DialogueResponseDirection direction, std::string dialogue, Maturity maturity, DialogueType dialogueType)
+std::string get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, DialogueType dialogueType)
 {
     //TODO: incorporate direction and get Age/Enthusiasm
     std::string response = Responder::get_instance().get_response(dialogue, maturity, direction);
@@ -143,7 +195,7 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Greeting);
+    std::string response = get_response(direction, dialogue, personality.age, DialogueType::Greeting);
     
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -151,9 +203,9 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
 
 std::string get_npc_insult_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::InsultNoun);
+    DialogueResponseDirection direction = get_insult_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::InsultNoun);
+    std::string response = get_response(direction, dialogue, personality.age, DialogueType::InsultNoun);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -163,7 +215,7 @@ std::string get_npc_statement_response(std::string dialogue, Appearance appearan
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Statement);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.maturity, DialogueType::Statement);
+    std::string response = get_response(direction, dialogue, personality.age, DialogueType::Statement);
 
     //TODO: update actions/figure out if leave conversation
     return response;
