@@ -4,17 +4,20 @@
 
 struct Big5Traits
 {
-	//These range from 0.0 to 1.0, with 1.0 indicating a high value in this item.
-	double Enthusiasm		= 0.5; //Extraversion
-	double Assertiveness	= 0.5; //Extraversion
-	double Withdrawal		= 0.5; //Neuroticism
-	double Volatility		= 0.5; //Neuroticism
-	double Compassion		= 0.5; //Agreeableness
-	double Politeness		= 0.5; //Agreeableness
-	double Industriousness	= 0.5; //Conscientiousness
-	double Orderliness		= 0.5; //Conscientiousness
-	double Openness			= 0.5; //Openness to Experience
-	double Intellect		= 0.5; //Openness to Experience
+	//These range from -1.0 to 1.0, with 1.0 indicating a high value in this item.
+	//The mapping from Big 5 percentile is (Percent/100) - 0.5;
+	//That is, 50th percentil gets a 0 in the trait, 0th percentile gets -1.0,
+	//and 100th percentile gets a 1.0;
+	double Enthusiasm		= 0.0; //Extraversion
+	double Assertiveness	= 0.0; //Extraversion
+	double Withdrawal		= 0.0; //Neuroticism
+	double Volatility		= 0.0; //Neuroticism
+	double Compassion		= 0.0; //Agreeableness
+	double Politeness		= 0.0; //Agreeableness
+	double Industriousness	= 0.0; //Conscientiousness
+	double Orderliness		= 0.0; //Conscientiousness
+	double Openness			= 0.0; //Openness to Experience
+	double Intellect		= 0.0; //Openness to Experience
 
 	double Extraversion() { return (Enthusiasm + Assertiveness) / 2; }
 	double Neuroticism() { return (Withdrawal + Volatility) / 2; }

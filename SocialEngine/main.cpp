@@ -43,7 +43,7 @@ int main()
     Appearance player_appearance = Appearance();
     Personality npc_personality = Personality();
     Knowledge knowledge = Knowledge();
-    npc_personality.maturity = Young;
+    npc_personality.maturity = 0.3;
     response = get_npc_response(player_words, player_appearance, npc_personality, knowledge);
 
     std::cout << "NPC response: " << response << std::endl;

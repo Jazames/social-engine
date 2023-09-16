@@ -123,9 +123,11 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
         }
 
         double angery = 0.0;
+        angery -= 0.9 * disposition.friendliness;
         angery += 0.3 * personality.traits.Volatility;
-        angery -= 0.3 * personality.traits.Agreeableness();
-        angery -= 0.3 * personality.morals.care_harm;
+        angery -= 0.4 * personality.traits.Agreeableness();
+        angery += 0.2 * personality.traits.Assertiveness;
+        angery -= 0.5 * personality.morals.care_harm;
         angery += 0.5 * personality.morals.loyalty_betrayal;
         angery -= 0.2 * personality.morals.fairness_cheating;
 

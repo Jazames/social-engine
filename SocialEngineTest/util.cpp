@@ -9,7 +9,7 @@ Personality get_default_personality()
 	Personality personality = Personality();
 
 	personality.intelligence = 1.0;
-	personality.maturity = Adult;
+	personality.maturity = 0.5;
 	personality.morals.care_harm = 0.5;
 	personality.morals.fairness_cheating = 0.5;
 	personality.morals.authority_subversion = 0.25;

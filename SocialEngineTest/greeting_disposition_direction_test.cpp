@@ -54,7 +54,7 @@ TEST(GreetingResponseDirection, test_ignore) {
     Knowledge k = get_default_knowledge();
 
     // Create a personality that is low in enthusiasm and high in withdrawal
-    p.traits.Enthusiasm = 0.2;
+    p.traits.Enthusiasm = -0.5;
     p.traits.Withdrawal = 0.8;
 
     Disposition disposition = get_disposition(a, k, p);
@@ -69,7 +69,7 @@ TEST(GreetingResponseDirection, test__ignore) {
 
     // Create a personality that is highly volatile and low in compassion
     p.traits.Volatility = 0.9;
-    p.traits.Compassion = 0.1;
+    p.traits.Compassion = -0.8;
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
@@ -82,8 +82,8 @@ TEST(GreetingResponseDirection, test_disagreeable_insult) {
     Knowledge k = get_default_knowledge();
 
     // Create a personality that is very low in agreeableness
-    p.traits.Compassion = 0.1;
-    p.traits.Politeness = 0.1;
+    p.traits.Compassion = -0.8;
+    p.traits.Politeness = -0.8;
     p.morals.loyalty_betrayal = -0.2;
     p.morals.authority_subversion = -0.2;
     p.morals.care_harm = -0.4;
@@ -128,8 +128,8 @@ TEST(GreetingResponseDirection, test_volatile_ignore) {
 
     // Highly volatile personality
     p.traits.Volatility = 0.9;
-    p.traits.Orderliness = 0.1;
-    p.traits.Politeness = 0.1;
+    p.traits.Orderliness = -0.8;
+    p.traits.Politeness = -0.8;
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
@@ -157,8 +157,8 @@ TEST(GreetingResponseDirection, test_introverted_wilt) {
     Knowledge k = get_default_knowledge();
 
     // Low enthusiasm and assertiveness leading to insult
-    p.traits.Enthusiasm = 0.1;
-    p.traits.Assertiveness = 0.1;
+    p.traits.Enthusiasm = -0.8;
+    p.traits.Assertiveness = -0.8;
     p.traits.Withdrawal = 0.7;
 
     Disposition disposition = get_disposition(a, k, p);
@@ -173,8 +173,8 @@ TEST(GreetingResponseDirection, test_childish_wilt) {
 
     // Childish maturity leading to wilt
     p.traits.Withdrawal = 0.9;
-    p.traits.Enthusiasm = 0.1;
-    p.maturity = Child;
+    p.traits.Enthusiasm = -0.8;
+    p.maturity = 0.1;
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
@@ -187,7 +187,7 @@ TEST(GreetingResponseDirection, test_wise_greet) {
     Knowledge k = get_default_knowledge();
 
     // Wise maturity with high compassion
-    p.maturity = Wise;
+    p.maturity = 0.9;
     p.traits.Compassion = 0.9;
 
     Disposition disposition = get_disposition(a, k, p);
@@ -202,8 +202,8 @@ TEST(GreetingResponseDirection, test_high_iq_ignore) {
 
     // High intelligence but low agreeableness
     p.intelligence = 1.5;
-    p.traits.Compassion = 0.2;
-    p.traits.Politeness = 0.2;
+    p.traits.Compassion = -0.6;
+    p.traits.Politeness = -0.6;
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
@@ -231,9 +231,9 @@ TEST(GreetingResponseDirection, test_unordered_insult) {
     Knowledge k = get_default_knowledge();
 
     // Low orderliness leading to insult
-    p.traits.Orderliness = 0.1;
-    p.traits.Politeness = 0.0;
-    p.traits.Compassion = 0.0;
+    p.traits.Orderliness = -0.8;
+    p.traits.Politeness = -1.0;
+    p.traits.Compassion = -1.0;
     p.morals.loyalty_betrayal = -0.2;
     p.morals.authority_subversion = -0.2;
     p.morals.care_harm = -0.4;
