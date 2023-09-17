@@ -2,8 +2,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <string>
 
 
+std::string sanitize_naughty_words(const std::string& str);
 
 template<typename T, void(*deallocatorFunc)(T*), typename AllocatorFunc, typename... Args>
 class DeallocatingWrapper {

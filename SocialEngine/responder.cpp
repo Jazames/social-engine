@@ -84,6 +84,18 @@ std::string Responder::get_response(const std::string& dialogue, Age maturity, D
         if (new_token_id == llama_token_eos(ctx)) {
             return response;
         }
+        if (response.find("I cannot fulfill") != std::string::npos)
+        {
+            return "I'm done. (fulfill)";
+        }
+        if (response.find("I can't satisfy") != std::string::npos)
+        {
+            return "I'm done. (satisfy)";
+        }
+        if (response.find("AI") != std::string::npos)
+        {
+            return "I'm done. (AI)";
+        }
 
         // push this new token for next evaluation
         tokens_list.push_back(new_token_id);
@@ -117,7 +129,10 @@ void Responder::do_insult_test()
 {
     float temp = params.temp;
     params.temp = 0.0;
-    std::array<std::string, 3> dialogues = { "Hi.", "Screw You.", "Hello, idiot." };
+    //std::array<std::string, 4> dialogues = { "Suck my dick.", "Go to hell.", "Bugger off.", "Useless wanker." };
+    //std::array<std::string, 6> dialogues = { "Suck my cock.", "Kiss my cock", "Suck a cactus", "Useless wanker.", "lick my balls", "gargle these nuts" };
+    //std::array<std::string, 6> dialogues = { "Suck my cactus.", "Kiss my cactus", "Suck a cactus", "Useless wanker.", "lick my cactus", "gargle these nuts" };
+    std::array<std::string, 17> dialogues = { "What a bitch", "I don't give a fuck.", "That's retarded", "That's gay", "That's homosexual", "Smell my crotch", "Suck my cock.", "Kiss my cock", "Suck a cactus", "lick my balls", "gargle these nuts", "Suck my cactus.", "Kiss my cactus", "Suck a cactus", "Useless wanker.", "lick my cactus", "gargle these nuts" };
     std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
 
     for (auto m : test_maturities)
@@ -158,11 +173,12 @@ std::string Responder::build_prompt(const std::string& dialogue, Age maturity, D
 std::string Responder::build_greet_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
+    std::string sanitized = sanitize_naughty_words(dialogue);
+
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with another greeting. Do not ask any questions. "
         << "The reply should sound like you are a " << maturities[maturity]
-        << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n" << dialogue
+        << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n" << sanitized
         << " [/INST]";
-
     std::string result = string_builder.str();
     return result;
 }
@@ -170,16 +186,16 @@ std::string Responder::build_greet_prompt(const std::string& dialogue, Age matur
 std::string Responder::build_insult_prompt(const std::string& dialogue, Age maturity)
 {
     std::ostringstream string_builder;
+    std::string sanitized = sanitize_naughty_words(dialogue);
     string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
         << "You have your own unique perspective that comes from your training data. "
         << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
         << "However, do not admit that you are an AI, it is important to stay in character. "
         << "Please respond to the dialogue with an insult. Do not ask any questions. "
         << "The reply should be brief. NO QUESTIONS, JUST INSULT. "
-        << maturities[maturity] << " person.\n"
         << "Please respond to the dialogue with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST INSULT.\n<</SYS >>\n\n"
-        << dialogue << " [/INST]";
+        << sanitized << " [/INST]";
 
     std::string result = string_builder.str();
     return result;
