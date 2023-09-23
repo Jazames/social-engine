@@ -19,11 +19,11 @@ struct Big5Traits
 	double Openness			= 0.0; //Openness to Experience
 	double Intellect		= 0.0; //Openness to Experience
 
-	double Extraversion() { return (Enthusiasm + Assertiveness) / 2; }
-	double Neuroticism() { return (Withdrawal + Volatility) / 2; }
-	double Agreeableness() { return (Compassion + Politeness) / 2; }
-	double Conscientiousness() { return (Industriousness + Orderliness) / 2; }
-	double OpennessToExperience() { return (Openness + Intellect) / 2; }
+	double Extraversion() { return (Enthusiasm + Assertiveness) / 2; } // Average of Enthusiasm and Assertiveness
+	double Neuroticism() { return (Withdrawal + Volatility) / 2; } // Average of Withdrawal and Volatility
+	double Agreeableness() { return (Compassion + Politeness) / 2; } // Average of Compassion and Politeness
+	double Conscientiousness() { return (Industriousness + Orderliness) / 2; } // Average of Industriousness and Orderliness
+	double OpennessToExperience() { return (Openness + Intellect) / 2; } // Average of Openness and Intellect
 };
 
 struct MoralFoundations

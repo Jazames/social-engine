@@ -49,39 +49,73 @@ Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personal
 
 DialogueResponseDirection get_greeting_response_direction(Disposition disposition, Personality personality)
 {
-    double d = disposition.friendliness;
 
-    if (d > 0)
+    double timidity = personality.traits.Neuroticism() - personality.traits.Extraversion();
+    timidity -= personality.traits.Politeness;
+
+    if (disposition.friendliness > 0)
     {
-        d *= (1.0 + (personality.morals.loyalty_betrayal * 0.3));
+        if (timidity > disposition.friendliness)
+        {
+            return Wilt;
+        }
+        else
+        {
+            return Greet;
+        }
     }
 
-    d += personality.traits.Agreeableness() * 0.4;
-    d += personality.traits.Extraversion() * 0.2;
-    d -= personality.traits.Neuroticism() * 0.25;
-    d += personality.traits.Orderliness * 0.05;
-    d += personality.morals.care_harm * 0.15;
-    d += personality.morals.authority_subversion * 0.05;
+    double politeness = 0;
+    politeness += 0.5 * personality.traits.Agreeableness();
+    politeness += 0.2 * personality.traits.Enthusiasm;
+    politeness += 0.1 * personality.traits.Orderliness;
+    politeness += 0.3 * personality.morals.care_harm;
+    politeness += 0.1 * personality.morals.authority_subversion;
 
-    if (d > 0.2)
+    if (politeness > 0)
     {
-        return DialogueResponseDirection::Greet;
-    }
-    else if (d > -0.2)
-    {
-        return DialogueResponseDirection::Wilt;
-    }
-    else if (d > -0.6)
-    {
-        return DialogueResponseDirection::Ignore;
-    }
-    else if (d < -2.0)
-    {
-        return DialogueResponseDirection::Fight;
+        if (timidity > politeness)
+        {
+            return Wilt;
+        }
+        else
+        {
+            return Greet;
+        }
     }
     else
     {
-        return DialogueResponseDirection::InsultVerb;
+        double anger = disposition.friendliness * -1.0;
+        anger -= politeness;
+        
+        double gonna_act = 0.0;
+        gonna_act += 0.3 * personality.traits.Assertiveness;
+        gonna_act += 0.3 * personality.traits.Volatility;
+        gonna_act += 0.1 * personality.traits.Industriousness;
+        gonna_act -= 0.3 * personality.traits.Withdrawal;
+
+        if (anger > 0.2 && gonna_act > 0.2)
+        {
+            if (gonna_act + anger > 0.4)
+            {
+                return Fight;
+            }
+            else
+            {
+                return InsultVerb;
+            }
+        }
+        else
+        {
+            if (anger > 0.5)
+            {
+                return InsultVerb;
+            }
+            else
+            {
+                return Ignore;
+            }
+        }
     }
 }
 
@@ -93,6 +127,7 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
     upstanding -= 0.1 * personality.traits.Volatility;
     upstanding += 0.1 * personality.traits.Politeness;
     upstanding += 0.1 * personality.traits.Orderliness;
+    upstanding -= 0.2 * disposition.friendliness;
     
     if (upstanding > 0.35)
     {
@@ -101,6 +136,7 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
         contrarian += 0.1 * personality.morals.liberty_oppression;
         contrarian -= 0.2 * personality.morals.loyalty_betrayal;
         contrarian += 0.2 * personality.traits.Assertiveness;
+        contrarian += 0.1 * disposition.friendliness;
         if (contrarian > 0)
         {
             return Greet;
