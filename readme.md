@@ -1,8 +1,27 @@
 # Social Engine
 This is a C++ project meant to simulate social interactions with and between NPCs in video games. It uses the Big Five Traits personality model and Jordan Peterson's personality work, along with Jonathan Haidt's Moral Foundation's Theory to simulate moral and preferential decision making.
 
-## Setup
+## New Setup
+Need to install vcpkg and set it up to manage packages. 
+
+Then install gtest using `vcpkg install gtest`
+Install CLBLAST using `vcpkg install clbast`
+
+Then, when using cmake to build, need to run this command in a build folder.
+`cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake`
+
+Then, open set "run" as the startup project in visual studio, and the you can hit debut and the application will work.
+
+
+
+
+
+### Old Setup
 In order for this to work, you must navigate to/create the directory [repo]/llamaCpp/build/visual-studio and run the command `cmake ../.. -G "Visual Studio 17 2022" -A x64 -DLLAMA_CUBLAS=ON`
+
+
+
+
 
 ## Development Plan
 The end goal is for this social engine to be able to generate personality models, provide a method to easily assign social meaning to external entities, and simulate social interactions between external entities. 
