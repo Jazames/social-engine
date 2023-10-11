@@ -73,19 +73,28 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
         response += llama_token_to_piece(ctx, new_token_id);
 
         // Check for the specific words in response
-        if (response.find("Greeting") != std::string::npos) {
+        if (response.find("Greeting") != std::string::npos)
+        {
             return Greeting;
         }
-        else if (response.find("Insult") != std::string::npos) {
+        else if (response.find("Compliment") != std::string::npos)
+        {
+            return Compliment;
+        }
+        else if (response.find("Insult") != std::string::npos)
+        {
             return InsultNoun;
         }
-        else if (response.find("Question") != std::string::npos) {
+        else if (response.find("Question") != std::string::npos)
+        {
             return Question;
         }
-        else if (response.find("Statement") != std::string::npos) {
+        else if (response.find("Statement") != std::string::npos)
+        {
             return Statement;
         }
-        else if (response.find("Request") != std::string::npos) {
+        else if (response.find("Request") != std::string::npos)
+        {
             return Request;
         }
 

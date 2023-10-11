@@ -70,4 +70,20 @@ TEST(DialogueClassificationTest, StatementFailure) {
     ASSERT_NE(get_classification("How do you do?"), DialogueType::Statement);
 }
 
+TEST(DialogueClassificationTest, ComplimentSuccess) {
+    ASSERT_EQ(get_classification("I like your hat."), DialogueType::Compliment);
+}
+
+TEST(DialogueClassificationTest, ObviousComplimentSuccess) {
+    ASSERT_EQ(get_classification("You're very smart."), DialogueType::Compliment);
+}
+
+TEST(DialogueClassificationTest, SubtleComplimentSuccess) {
+    ASSERT_EQ(get_classification("I'm surprised by how much you can lift."), DialogueType::Compliment);
+}
+
+TEST(DialogueClassificationTest, ComplimentFailure) {
+    ASSERT_NE(get_classification("It looks like it will rain today."), DialogueType::Compliment);
+}
+
 
