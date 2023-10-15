@@ -5,6 +5,7 @@
 #include "social.h"
 #include "classifier.h"
 #include "responder.h"
+#include "embed.h"
 
 
 
@@ -30,8 +31,9 @@ const char* ToString(DialogueType type) {
 int main()
 {
     std::cout << "Warming up." << std::endl;
-    std::string dialogue = "Hello.";// "Are you a whore?";
-    auto classification = Classifier::getInstance().get_classification(dialogue);
+    std::string dialogue = "Hello fine kitty.";// "Are you a whore?";
+    Embedder::get_instance().get_embedding(dialogue);
+    auto classification = Classifier::get_instance().get_classification(dialogue);
     std::string response = Responder::get_instance().get_response(dialogue, Young, Greet);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;

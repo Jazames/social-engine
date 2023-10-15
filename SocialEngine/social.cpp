@@ -36,7 +36,7 @@ Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personal
 
     //Factor in clothing
     double clothes_count = (double)appearance.clothes.size();
-    for (auto c : appearance.clothes)
+    for (const auto c : appearance.clothes)
     {
         disposition.friendliness += ((c.neatness_weight * personality.traits.Orderliness) * clothing_weight) / clothes_count;
         disposition.friendliness += ((c.foreign_weight * personality.traits.Openness) * clothing_weight) / clothes_count;
@@ -225,7 +225,7 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
 DialogueType get_classification(std::string dialogue)
 {
-    return Classifier::getInstance().get_classification(dialogue);
+    return Classifier::get_instance().get_classification(dialogue);
 }
 
 std::string get_npc_greeting_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {

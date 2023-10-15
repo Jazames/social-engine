@@ -320,7 +320,7 @@ Responder::Responder() {
 
     // init LLM
     llama_backend_init(params.numa);
-    ctx_params = llama_context_default_params();
+    ctx_params = llama_context_params_from_gpt_params(params);
     model = llama_load_model_from_file(params.model.c_str(), ctx_params);
     if (model == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);

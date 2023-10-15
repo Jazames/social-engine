@@ -20,7 +20,7 @@ enum DialogueType {
 
 class Classifier {
 public:
-    static Classifier& getInstance() {
+    static Classifier& get_instance() {
         static Classifier instance; // Guaranteed to be lazy initialized and destroyed correctly
         return instance;
     }

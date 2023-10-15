@@ -19,8 +19,13 @@ set(SOCIAL_ENGINE_TEST_SOURCES
     # ... add other test files here ...
 )
 
+set(SOCIAL_ENGINE_TEST_HEADERS
+    test_util.h
+    pch.h
+)
+
 # Add the test executable
-add_executable(SocialEngineTests ${SOCIAL_ENGINE_TEST_SOURCES})
+add_executable(SocialEngineTests ${SOCIAL_ENGINE_TEST_SOURCES} ${SOCIAL_ENGINE_TEST_HEADERS})
 
 # Link the test executable against GTest libraries, SocialEngine, and potentially llamaCpp if needed directly
 target_link_libraries(SocialEngineTests PRIVATE SocialEngine GTest::gtest GTest::gtest_main)
