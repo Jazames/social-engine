@@ -5,6 +5,7 @@ project(SocialEngine)
 # Set the variables that need to be passed to the llamaCpp subproject
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 set(LLAMA_CLBLAST ON CACHE BOOL "Enable CLBlast for llamaCpp" FORCE)
+#set(LLAMA_CUBLAS ON CACHE BOOL "Enable Cuda for llamaCpp" FORCE)
 #set(CMAKE_PREFIX_PATH "C:\\vcpkg\\packages\\clblast_x64-windows\\lib\\cmake\\CLBlast" CACHE STRING "Prefix path for CLBlast" FORCE)
 
 # Include the subprojects

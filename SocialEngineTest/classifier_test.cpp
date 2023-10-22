@@ -1,8 +1,28 @@
 
 #include "pch.h"
-//#include "../SocialEngine/classifier.h"
+#include "../SocialEngine/classifier.h"
 #include "../SocialEngine/social.h"
 
+
+class ClassificationEnvironment : public ::testing::Environment {
+public:
+    // Override this to define how to set up the environment.
+    void SetUp() override {
+        std::cout << "Classification setup\n";
+
+        //warmup classification.
+        Classifier::get_instance().get_classification("WHAT?");
+
+        std::cout << "Classification Warmed Up" << std::endl;
+
+    }
+
+    // Override this to define how to tear down the environment.
+    void TearDown() override {
+        // Code here will run once after all tests finish.
+        std::cout << "Classification teardown\n";
+    }
+};
 
 
 TEST(DialogueClassificationTest, GreetingSuccess) {
