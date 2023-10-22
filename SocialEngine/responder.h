@@ -23,10 +23,8 @@ public:
 
 private:
     llama_model* model;
-    llama_model_params model_params;
-    llama_context_params ctx_params;
     gpt_params params;
-    llama_context* context;
+    llama_context* ctx;
 
     const std::string model_file_path;
 

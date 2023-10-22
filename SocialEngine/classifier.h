@@ -29,8 +29,6 @@ public:
 
 private:
     llama_model* model;
-    llama_model_params model_params;
-    llama_context_params ctx_params;
     llama_context* ctx;
     gpt_params params;
 

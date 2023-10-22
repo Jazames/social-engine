@@ -216,37 +216,23 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
 
 Classifier::Classifier() {
     // Initialization logic
-    //params.use_mmap = true;
     params.sparams.temp = 0.0f;
     params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
     params.seed = time(NULL);;
-    //params.n_ctx = 2048;
 
     // init LLM
     llama_backend_init(params.numa);
 
 
     std::tie(model, ctx) = llama_init_from_gpt_params(params);
-    
-    /*
-    model_params = llama_model_params_from_gpt_params(params);
-    model = llama_load_model_from_file(params.model.c_str(), model_params);
-    ctx_params = llama_context_params_from_gpt_params(params);
     if (model == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
         exit(1);
     }
-    ctx = llama_new_context_with_model(model, ctx_params);
     if (ctx == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
         exit(1);
     }
-
-    std::vector<llama_token> tmp = { llama_token_bos(ctx), llama_token_eos(ctx), };
-    llama_decode(ctx, llama_batch_get_one(tmp.data(), std::min(tmp.size(), (size_t)params.n_batch), 0, 0));
-    llama_kv_cache_tokens_rm(ctx, -1, -1);
-    llama_reset_timings(ctx);
-    //*/
 }
 
 Classifier::~Classifier() {
