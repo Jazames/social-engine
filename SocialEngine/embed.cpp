@@ -5,7 +5,7 @@
 
 
 
-std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& prompt)
+std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& prompt) 
 {
     std::array<float, EMBEDDING_SIZE> embedding = std::array<float, EMBEDDING_SIZE>();
     llama_kv_cache_tokens_rm(ctx, -1, -1);
@@ -39,7 +39,7 @@ std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& pro
         n_past += n_tokens;
         embd_inp.erase(embd_inp.begin(), embd_inp.begin() + n_tokens);
     }
-    
+
     const int n_embd = llama_n_embd(model);
     float * values = llama_get_embeddings(ctx);
     for (int i = 0; i < n_embd && i < EMBEDDING_SIZE; i++)

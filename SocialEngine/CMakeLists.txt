@@ -1,4 +1,5 @@
-project(SocialEngine)
+set(TARGET SocialEngine)
+
 
 # Specify the source files
 set(SOCIAL_ENGINE_SOURCES
@@ -9,7 +10,6 @@ set(SOCIAL_ENGINE_SOURCES
     embed.cpp
     # ... add other source files here ...
 )
-
 # Specify the header files
 Set(SOCIAL_ENGINE_HEADERS
     classifier.h
@@ -19,11 +19,42 @@ Set(SOCIAL_ENGINE_HEADERS
     embed.h
 )
 
+add_library(${TARGET} OBJECT ${SOCIAL_ENGINE_SOURCES} ${SOCIAL_ENGINE_HEADERS})
+
+
+if (BUILD_SHARED_LIBS)
+    set_target_properties(${TARGET} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
+target_include_directories(${TARGET} PUBLIC .)
+target_compile_features(${TARGET} PUBLIC cxx_std_11)
+target_link_libraries(${TARGET} PRIVATE llama common)
+
+## Specify the source files
+#set(SOCIAL_ENGINE_SOURCES
+#    classifier.cpp
+#    responder.cpp
+#    social.cpp
+#    util.cpp
+#    embed.cpp
+#    # ... add other source files here ...
+#)
+
+## Specify the header files
+#Set(SOCIAL_ENGINE_HEADERS
+#    classifier.h
+#    responder.h
+#    social.h
+#    util.h
+#    embed.h
+#)
+
 # Create the SocialEngine library
-add_library(SocialEngine ${SOCIAL_ENGINE_SOURCES} ${SOCIAL_ENGINE_HEADERS})
+# add_library(SocialEngine ${SOCIAL_ENGINE_SOURCES} ${SOCIAL_ENGINE_HEADERS})
 
 # Link it against llamaCpp
-target_link_libraries(SocialEngine PUBLIC llama common)
+#target_link_libraries(SocialEngine PUBLIC llama common)
+#target_compile_features(SocialEngine PRIVATE cxx_std_11)
 
 # Include directories if there are any
-target_include_directories(SocialEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+#target_include_directories(SocialEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

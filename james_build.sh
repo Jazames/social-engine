@@ -12,6 +12,10 @@ mkdir build
 cd build
 
 # Run the cmake command
-cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scripts/buildsystems/vcpkg.cmake -DLLAMA_CUBLAS=ON -DBUILD_SHARED_LIBS=OFF
+
+echo "Building"
+cmake --build . --config Release
+cmake --build . --config Debug
 
 echo "Completed!"
