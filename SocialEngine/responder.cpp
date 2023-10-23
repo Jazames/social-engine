@@ -180,7 +180,6 @@ std::string Responder::get_response(const std::string& dialogue, Age maturity, D
 
         // end of text token
         if (!embd.empty() && embd.back() == llama_token_eos(ctx)) {
-            LOG_TEE(" [end of text]\n");
             return response;
         }
     }
@@ -390,7 +389,7 @@ std::string Responder::build_sabotage_prompt(const std::string& dialogue, Age ma
 
 Responder::Responder() {
     // Initialization logic
-    params.sparams.temp = 0.0f;
+    params.sparams.temp = 0.8f;
     params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
     params.seed = time(NULL);;
 
