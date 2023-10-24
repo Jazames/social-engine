@@ -15,7 +15,7 @@ public:
         return instance;
     }
 
-    std::array<float, EMBEDDING_SIZE> get_embedding(const std::string& prompt);
+    std::vector<float> get_embedding(const std::string& prompt);
 
 private:
     llama_model* model;

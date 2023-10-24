@@ -33,10 +33,10 @@ private:
 
     struct Mapping {
         std::string phrase;
-        std::array<float, EMBEDDING_SIZE> embedding;
+        std::vector<float> embedding;
     };
 
-    float cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const;
+    float cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const;
 
     std::vector<Mapping> mappings;
 public:

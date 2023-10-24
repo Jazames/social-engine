@@ -49,11 +49,11 @@ TEST_F(GlobalKnowledgeTest, GetClosestItemsSimpleTest) {
 
 TEST_F(GlobalKnowledgeTest, GetClosestItemsMildTest) {
     auto& gk = GlobalKnowledge::get_instance();
-    gk.add_knowledge("dog");
+    gk.add_knowledge("shark");
     gk.add_knowledge("cat");
     auto closest_items = gk.get_closest_items("kitten", 1);
     ASSERT_EQ(closest_items.size(), 1);
-    ASSERT_EQ(closest_items[0], "cat");  // "hello" should be the closest item to itself
+    ASSERT_EQ(closest_items[0], "cat");  // "cat" should be the closest item to kitten
 }
 
 TEST_F(GlobalKnowledgeTest, GetClosestItemsMidTest) {

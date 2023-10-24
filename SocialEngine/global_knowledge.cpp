@@ -11,8 +11,8 @@ int GlobalKnowledge::add_knowledge(const std::string& phrase)
     {
         return index;
     }
-    const std::array<float, EMBEDDING_SIZE> embedding = Embedder::get_instance().get_embedding(phrase);
-    mappings.push_back({ phrase, embedding });
+    const std::vector<float> embedding = Embedder::get_instance().get_embedding(phrase);
+    mappings.push_back({phrase, embedding });
     return mappings.size() - 1; //Get the item just added.
 }
 
@@ -26,7 +26,7 @@ const std::string GlobalKnowledge::get_knowledge(size_t index) const {
 
 const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, int num_items) const
 {
-    const std::array<float, EMBEDDING_SIZE> phrase_embedding = Embedder::get_instance().get_embedding(phrase);
+    const std::vector<float> phrase_embedding = Embedder::get_instance().get_embedding(phrase);
     std::vector<std::pair<float, std::string>> similarity_scores;
 
     for (const auto& mapping : mappings) {
@@ -45,7 +45,7 @@ const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string ph
 }
 
 //private methods.
-float GlobalKnowledge::cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const {
+float GlobalKnowledge::cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const {
     float dot_product = 0.0;
     float norm_a = 0.0;
     float norm_b = 0.0;

@@ -5,10 +5,10 @@
 
 
 
-std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& prompt) 
+std::vector<float> Embedder::get_embedding(const std::string& prompt) 
 {
     params.prompt = prompt;
-    std::array<float, EMBEDDING_SIZE> embedding = std::array<float, EMBEDDING_SIZE>();
+    std::vector<float> embedding = std::vector<float>(EMBEDDING_SIZE);
     llama_set_state_data(ctx, save_state.data());
 
     const int n_ctx_train = llama_n_ctx_train(model);
@@ -64,6 +64,15 @@ Embedder::Embedder() {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
         exit(1);
     }
+    if (ctx == NULL) {
+        fprintf(stderr, "%s: error: unable to load model\n", __func__);
+        exit(1);
+    }
+    //Now reload the context to get an empty context for the restore, since an empty run has been put through.
+    llama_free(ctx);
+    auto cparams = llama_context_params_from_gpt_params(params);
+    ctx = llama_new_context_with_model(model, cparams);
+
     if (ctx == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
         exit(1);
