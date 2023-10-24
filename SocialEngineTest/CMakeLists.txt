@@ -7,6 +7,7 @@ set(SOCIAL_ENGINE_TEST_SOURCES
     insult_disposition_direction_test.cpp
     greeting_disposition_direction_test.cpp
     classifier_test.cpp
+    embedding_test.cpp
     pch.cpp
     test_util.cpp
     main.cpp

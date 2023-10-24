@@ -8,8 +8,17 @@
 std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& prompt) 
 {
     std::array<float, EMBEDDING_SIZE> embedding = std::array<float, EMBEDDING_SIZE>();
-    llama_kv_cache_tokens_rm(ctx, -1, -1);
-    llama_reset_timings(ctx);
+    //llama_kv_cache_tokens_rm(ctx, -1, -1);
+    //llama_reset_timings(ctx);
+    //get a new context.
+    if (ctx != NULL)
+    {
+        llama_free(ctx);
+        auto cparams = llama_context_params_from_gpt_params(params);
+        ctx = llama_new_context_with_model(model, cparams);
+    }
+    float* start_values = llama_get_embeddings(ctx);
+
 
     const int n_ctx_train = llama_n_ctx_train(model);
     const int n_ctx = llama_n_ctx(ctx);

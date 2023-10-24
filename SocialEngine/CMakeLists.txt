@@ -8,6 +8,7 @@ set(SOCIAL_ENGINE_SOURCES
     social.cpp
     util.cpp
     embed.cpp
+    global_knowledge.cpp
     # ... add other source files here ...
 )
 # Specify the header files
@@ -17,6 +18,7 @@ Set(SOCIAL_ENGINE_HEADERS
     social.h
     util.h
     embed.h
+    global_knowledge.h
 )
 
 add_library(${TARGET} OBJECT ${SOCIAL_ENGINE_SOURCES} ${SOCIAL_ENGINE_HEADERS})
