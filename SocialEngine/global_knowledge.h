@@ -37,6 +37,8 @@ private:
     };
 
     float cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const;
+    float euclidian_distance(const std::vector<float>& vec1, const std::vector<float>& vec2) const;
+    std::vector<float> normalize(const std::vector<float>& vec) const;
 
     std::vector<Mapping> mappings;
 public:

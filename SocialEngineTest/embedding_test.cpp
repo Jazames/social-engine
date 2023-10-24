@@ -82,4 +82,39 @@ TEST_F(GlobalKnowledgeTest, GetClosestItemsQuestionTest) {
     ASSERT_EQ(closest_items[0], "The cat is on the roof.");  // The sentence about the cat should be the closest
 }
 
+TEST_F(GlobalKnowledgeTest, GetClosestItemsFantasyDescriptionTest) {
+    auto& gk = GlobalKnowledge::get_instance();
+
+    auto blacksmith = "Nestled within the heart of the bustling city of Eldoria, The Whispering Forge is a place where reality intertwines with the arcane. Renowned throughout the land for producing enchanted weaponry, this ancient forge hums with a quiet power that whispers through the cobblestone streets. Master Blacksmith Alden, a burly man with a gentle smile, is the heart and soul of this mystical place. Alongside him, a cadre of skilled apprentices and enchanters tirelessly work, their hammers singing upon anvils from dawn till dusk. The enchanted embers from the forge dance in the night, casting a warm, inviting glow that welcomes warriors and sorcerers alike, all in search of legendary arms to aid them in their quests.";
+    auto library = "Perched upon the cliffs overlooking the serene Moonlit Cove, The Alabaster Alcove serves as a sanctuary of knowledge and healing. With its ivory towers and silvered domes, this majestic edifice is a haven for scholars, healers, and those seeking solace from the chaos of the outside world. Lady Seraphine, the revered healer and scholar, presides over this sanctuary, her wisdom a guiding light to all who seek aid. The halls of the Alabaster Alcove resonate with soft chants and the rustle of ancient tomes, as acolytes and scholars delve into the mysteries of healing arts and ancient lore. The tranquil gardens and the calming rush of the nearby sea provide a peaceful backdrop to the relentless pursuit of knowledge and the gentle art of healing practiced within these hallowed halls.";
+    auto tavern = "Tucked away in the shady corners of the merchant district in Valthoria, The Veiled Tavern is a place of shadows and whispered secrets. By day, it’s a modest establishment serving ales and warm meals to the weary travelers and local merchants. By night, however, it transforms into a hub of clandestine meetings and illicit deals. The tavern keeper, a mysterious figure known as Shade, is rumored to be a broker of information, and his establishment is often frequented by spies, rogues, and sometimes even nobility seeking forbidden knowledge. The flickering candlelight casts long shadows on the worn wooden tables as plots are hatched and secrets traded in hushed tones, under the ever-watchful eye of Shade and the veil of the night.";
+    gk.add_knowledge(blacksmith);
+    gk.add_knowledge(library);
+    gk.add_knowledge(tavern);
+
+    auto closest_items = gk.get_closest_items("Tell me where I can find a peaceful place to learn.", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], library);
+
+    closest_items = gk.get_closest_items("Where can I get some Ale?", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], tavern);
+
+    closest_items = gk.get_closest_items("Who makes the best enchanted weapons?", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], blacksmith);
+
+    closest_items = gk.get_closest_items("Who is Lady Seraphine?", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], library);
+
+    closest_items = gk.get_closest_items("I'd like to learn a secret.", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], tavern);
+
+    closest_items = gk.get_closest_items("Who is the local blacksmith?", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], blacksmith);
+}
+
 

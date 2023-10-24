@@ -11,7 +11,7 @@ int GlobalKnowledge::add_knowledge(const std::string& phrase)
     {
         return index;
     }
-    const std::vector<float> embedding = Embedder::get_instance().get_embedding(phrase);
+    const std::vector<float> embedding = normalize(Embedder::get_instance().get_embedding(phrase));
     mappings.push_back({phrase, embedding });
     return mappings.size() - 1; //Get the item just added.
 }
@@ -55,6 +55,41 @@ float GlobalKnowledge::cosine_similarity(const std::vector<float>& a, const std:
         norm_b += b[i] * b[i];
     }
     return dot_product / (sqrt(norm_a) * sqrt(norm_b));
+}
+
+float GlobalKnowledge::euclidian_distance(const std::vector<float>& vec1, const std::vector<float>& vec2) const {
+    if (vec1.size() != vec2.size()) {
+        return 0.0f;
+    }
+
+    float sum = 0.0f;
+    for (size_t i = 0; i < vec1.size(); ++i) {
+        float diff = vec1[i] - vec2[i];
+        sum += diff * diff;
+    }
+    return std::sqrt(sum);
+}
+
+std::vector<float> GlobalKnowledge::normalize(const std::vector<float>& vec) const {
+    // Compute the Euclidean norm (length) of the vector
+    float norm = 0.0f;
+    for (float value : vec) {
+        norm += value * value;
+    }
+    norm = std::sqrt(norm);
+
+    // Check for a zero vector (to avoid division by zero)
+    if (norm == 0.0f) {
+        throw std::invalid_argument("Cannot normalize a zero vector");
+    }
+
+    // Normalize each component of the vector
+    std::vector<float> normalizedVec(vec.size());
+    for (size_t i = 0; i < vec.size(); ++i) {
+        normalizedVec[i] = vec[i] / norm;
+    }
+
+    return normalizedVec;
 }
 
 //protected methods
