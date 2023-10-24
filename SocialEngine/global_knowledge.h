@@ -36,7 +36,7 @@ private:
         std::array<float, EMBEDDING_SIZE> embedding;
     };
 
-    double cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const;
+    float cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const;
 
     std::vector<Mapping> mappings;
 public:

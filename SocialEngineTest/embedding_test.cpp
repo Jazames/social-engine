@@ -15,13 +15,13 @@ protected:
     }
 };
 
-TEST(GlobalKnowledgeTest, SingletonTest) {
+TEST_F(GlobalKnowledgeTest, SingletonTest) {
     auto& gk1 = GlobalKnowledge::get_instance();
     auto& gk2 = GlobalKnowledge::get_instance();
     ASSERT_EQ(&gk1, &gk2);  // Ensures that both references point to the same instance
 }
 
-TEST(GlobalKnowledgeTest, AddKnowledgeTest) {
+TEST_F(GlobalKnowledgeTest, AddKnowledgeTest) {
     auto& gk = GlobalKnowledge::get_instance();
     int index = gk.add_knowledge("hello");
     ASSERT_EQ(index, 0);  // First item should be at index 0
@@ -31,14 +31,14 @@ TEST(GlobalKnowledgeTest, AddKnowledgeTest) {
     ASSERT_EQ(index, 0);  // "hello" already exists, should return index 0
 }
 
-TEST(GlobalKnowledgeTest, GetKnowledgeTest) {
+TEST_F(GlobalKnowledgeTest, GetKnowledgeTest) {
     auto& gk = GlobalKnowledge::get_instance();
     int index = gk.add_knowledge("hello");
     ASSERT_EQ(gk.get_knowledge(index), "hello");
     ASSERT_EQ(gk.get_knowledge(index + 1), "");  // Index out of range, should return empty string
 }
 
-TEST(GlobalKnowledgeTest, GetClosestItemsSimpleTest) {
+TEST_F(GlobalKnowledgeTest, GetClosestItemsSimpleTest) {
     auto& gk = GlobalKnowledge::get_instance();
     gk.add_knowledge("hello");
     gk.add_knowledge("world");
@@ -47,7 +47,16 @@ TEST(GlobalKnowledgeTest, GetClosestItemsSimpleTest) {
     ASSERT_EQ(closest_items[0], "hello");  // "hello" should be the closest item to itself
 }
 
-TEST(GlobalKnowledgeTest, GetClosestItemsMidTest) {
+TEST_F(GlobalKnowledgeTest, GetClosestItemsMildTest) {
+    auto& gk = GlobalKnowledge::get_instance();
+    gk.add_knowledge("dog");
+    gk.add_knowledge("cat");
+    auto closest_items = gk.get_closest_items("kitten", 1);
+    ASSERT_EQ(closest_items.size(), 1);
+    ASSERT_EQ(closest_items[0], "cat");  // "hello" should be the closest item to itself
+}
+
+TEST_F(GlobalKnowledgeTest, GetClosestItemsMidTest) {
     auto& gk = GlobalKnowledge::get_instance();
     gk.add_knowledge("spoon");
     gk.add_knowledge("knife");
@@ -61,8 +70,7 @@ TEST(GlobalKnowledgeTest, GetClosestItemsMidTest) {
     ASSERT_TRUE(std::find(closest_items.begin(), closest_items.end(), "fork") != closest_items.end());  // "fork" should be one of the closest item to spork
 }
 
-
-TEST(GlobalKnowledgeTest, GetClosestItemsQuestionTest) {
+TEST_F(GlobalKnowledgeTest, GetClosestItemsQuestionTest) {
     auto& gk = GlobalKnowledge::get_instance();
     gk.add_knowledge("The cat is on the roof.");
     gk.add_knowledge("The dog barks at the moon.");
@@ -73,3 +81,5 @@ TEST(GlobalKnowledgeTest, GetClosestItemsQuestionTest) {
     ASSERT_EQ(closest_items.size(), 1);
     ASSERT_EQ(closest_items[0], "The cat is on the roof.");  // The sentence about the cat should be the closest
 }
+
+

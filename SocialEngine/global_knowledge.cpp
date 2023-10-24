@@ -34,18 +34,10 @@ const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string ph
         similarity_scores.push_back({ similarity, mapping.phrase });
     }
 
-    for (size_t i = 0; i < EMBEDDING_SIZE; i++)
-    {
-        if (mappings[0].embedding[i] != mappings[1].embedding[i])
-        {
-            std::cout << "Somethign is actually different";
-        }
-    }
-
     std::sort(similarity_scores.begin(), similarity_scores.end(), std::greater<>());  // Sort in descending order of similarity
 
     std::vector<std::string> closest_items;
-    for (int i = 0; i < num_items && i < similarity_scores.size(); ++i) {
+    for (int i = 0; i < num_items && i < similarity_scores.size(); i++) {
         closest_items.push_back(similarity_scores[i].second);
     }
 
@@ -53,10 +45,10 @@ const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string ph
 }
 
 //private methods.
-double GlobalKnowledge::cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const {
-    double dot_product = 0.0;
-    double norm_a = 0.0;
-    double norm_b = 0.0;
+float GlobalKnowledge::cosine_similarity(const std::array<float, EMBEDDING_SIZE>& a, const std::array<float, EMBEDDING_SIZE>& b) const {
+    float dot_product = 0.0;
+    float norm_a = 0.0;
+    float norm_b = 0.0;
     for (size_t i = 0; i < EMBEDDING_SIZE; ++i) {
         dot_product += a[i] * b[i];
         norm_a += a[i] * a[i];

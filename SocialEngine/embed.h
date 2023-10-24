@@ -21,6 +21,8 @@ private:
     llama_model* model;
     llama_context* ctx;
     gpt_params params;
+
+    std::vector<unsigned char> save_state;
     
     Embedder();
 

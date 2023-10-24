@@ -7,18 +7,9 @@
 
 std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& prompt) 
 {
+    params.prompt = prompt;
     std::array<float, EMBEDDING_SIZE> embedding = std::array<float, EMBEDDING_SIZE>();
-    //llama_kv_cache_tokens_rm(ctx, -1, -1);
-    //llama_reset_timings(ctx);
-    //get a new context.
-    if (ctx != NULL)
-    {
-        llama_free(ctx);
-        auto cparams = llama_context_params_from_gpt_params(params);
-        ctx = llama_new_context_with_model(model, cparams);
-    }
-    float* start_values = llama_get_embeddings(ctx);
-
+    llama_set_state_data(ctx, save_state.data());
 
     const int n_ctx_train = llama_n_ctx_train(model);
     const int n_ctx = llama_n_ctx(ctx);
@@ -60,7 +51,6 @@ std::array<float, EMBEDDING_SIZE> Embedder::get_embedding(const std::string& pro
 
 Embedder::Embedder() {
     // Initialization logic
-    params.sparams.temp = 0.0f;
     params.embedding = true;
     params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
     params.seed = time(NULL);;
@@ -78,6 +68,11 @@ Embedder::Embedder() {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
         exit(1);
     }
+
+    //Save internal state to get fresh embeddings.
+    size_t state_size = llama_get_state_size(ctx);
+    save_state = std::vector<unsigned char>(state_size);
+    llama_copy_state_data(ctx, save_state.data());
 }
 
 Embedder::~Embedder() {
