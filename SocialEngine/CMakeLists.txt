@@ -7,7 +7,7 @@ set(SOCIAL_ENGINE_SOURCES
     responder.cpp
     social.cpp
     util.cpp
-    embed.cpp
+    llama_embed.cpp
     global_knowledge.cpp
     # ... add other source files here ...
 )
@@ -17,7 +17,7 @@ Set(SOCIAL_ENGINE_HEADERS
     responder.h
     social.h
     util.h
-    embed.h
+    llama_embed.h
     global_knowledge.h
 )
 

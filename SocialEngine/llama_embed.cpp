@@ -1,4 +1,4 @@
-#include "embed.h"
+#include "llama_embed.h"
 
 #include "util.h"
 #include <algorithm>

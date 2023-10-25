@@ -5,7 +5,7 @@
 #include "social.h"
 #include "classifier.h"
 #include "responder.h"
-#include "embed.h"
+#include "llama_embed.h"
 
 
 
