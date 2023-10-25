@@ -8,6 +8,7 @@ set(SOCIAL_ENGINE_SOURCES
     social.cpp
     util.cpp
     llama_embed.cpp
+    bert_embed.cpp
     global_knowledge.cpp
     # ... add other source files here ...
 )
@@ -18,6 +19,7 @@ Set(SOCIAL_ENGINE_HEADERS
     social.h
     util.h
     llama_embed.h
+    bert_embed.h
     global_knowledge.h
 )
 
@@ -30,7 +32,7 @@ endif()
 
 target_include_directories(${TARGET} PUBLIC .)
 target_compile_features(${TARGET} PUBLIC cxx_std_11)
-target_link_libraries(${TARGET} PRIVATE llama common)
+target_link_libraries(${TARGET} PRIVATE llama common bert)
 
 ## Specify the source files
 #set(SOCIAL_ENGINE_SOURCES

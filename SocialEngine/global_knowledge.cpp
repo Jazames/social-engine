@@ -1,6 +1,7 @@
 #include "global_knowledge.h"
 
 
+#include "bert_embed.h"
 
 //public methods
 int GlobalKnowledge::add_knowledge(const std::string& phrase)
@@ -11,7 +12,7 @@ int GlobalKnowledge::add_knowledge(const std::string& phrase)
     {
         return index;
     }
-    const std::vector<float> embedding = normalize(Embedder::get_instance().get_embedding(phrase));
+    const std::vector<float> embedding = normalize(BertEmbedder::get_instance().get_embedding(phrase));
     mappings.push_back({phrase, embedding });
     return mappings.size() - 1; //Get the item just added.
 }
@@ -26,7 +27,7 @@ const std::string GlobalKnowledge::get_knowledge(size_t index) const {
 
 const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, int num_items) const
 {
-    const std::vector<float> phrase_embedding = Embedder::get_instance().get_embedding(phrase);
+    const std::vector<float> phrase_embedding = BertEmbedder::get_instance().get_embedding(phrase);
     std::vector<std::pair<float, std::string>> similarity_scores;
 
     for (const auto& mapping : mappings) {
@@ -49,7 +50,7 @@ float GlobalKnowledge::cosine_similarity(const std::vector<float>& a, const std:
     float dot_product = 0.0;
     float norm_a = 0.0;
     float norm_b = 0.0;
-    for (size_t i = 0; i < EMBEDDING_SIZE; ++i) {
+    for (size_t i = 0; i < a.size(); ++i) {
         dot_product += a[i] * b[i];
         norm_a += a[i] * a[i];
         norm_b += b[i] * b[i];
@@ -80,7 +81,8 @@ std::vector<float> GlobalKnowledge::normalize(const std::vector<float>& vec) con
 
     // Check for a zero vector (to avoid division by zero)
     if (norm == 0.0f) {
-        throw std::invalid_argument("Cannot normalize a zero vector");
+        //TODO: log error.
+        return vec;
     }
 
     // Normalize each component of the vector
