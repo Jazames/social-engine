@@ -10,7 +10,7 @@
 
 
 
-std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction)
+std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
 {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);

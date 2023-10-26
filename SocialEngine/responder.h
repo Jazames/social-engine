@@ -7,7 +7,7 @@
 #include "llama.h"
 #include "util.h"
 #include "dialogue.h"
-#include "Personality.hpp"
+#include "personality.h"
 
 class Responder {
 public:
@@ -16,7 +16,7 @@ public:
         return instance;
     }
 
-    std::string get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction);
+    std::string get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info = "");
 
     void do_greet_test();
     void do_insult_test();

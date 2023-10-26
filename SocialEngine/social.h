@@ -1,7 +1,7 @@
 #pragma once
 
 #include "classifier.h"
-#include "Personality.hpp"
+#include "Personality.h"
 #include "dialogue.h"
 
 DialogueType get_classification(std::string dialogue);

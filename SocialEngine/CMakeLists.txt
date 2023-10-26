@@ -20,6 +20,8 @@ Set(SOCIAL_ENGINE_HEADERS
     util.h
     llama_embed.h
     bert_embed.h
+    personality.h
+    dialogue.h
     global_knowledge.h
 )
 

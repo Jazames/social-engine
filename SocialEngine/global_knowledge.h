@@ -26,6 +26,7 @@ public:
     const std::string get_knowledge(size_t index) const;
 
     const std::vector<std::string> get_closest_items(std::string phrase, int num_items) const;
+    const std::vector<std::string> get_closest_items(std::string phrase, std::vector<int> knowledge_ids, int num_items) const;
 
 private:
     GlobalKnowledge() = default;  // Private constructor
@@ -35,6 +36,7 @@ private:
         std::vector<float> embedding;
     };
 
+    const std::vector<std::string> get_closest_items(std::string phrase, std::vector<Mapping> knowledge_mappings, int num_items) const;
     float cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const;
     float euclidian_distance(const std::vector<float>& vec1, const std::vector<float>& vec2) const;
     std::vector<float> normalize(const std::vector<float>& vec) const;

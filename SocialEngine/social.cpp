@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <algorithm>
-#include "Personality.hpp"
+#include "personality.h"
 #include "classifier.h"
 #include "responder.h"
 #include "dialogue.h"
+#include "global_knowledge.h"
 
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
@@ -202,16 +203,37 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
     return knowledge;
 }
 
-// Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::string get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, DialogueType dialogueType)
+
+std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 {
+    const GlobalKnowledge& gk = GlobalKnowledge::get_instance();
+	std::string supplemental_info = "";
+
+    std::vector<std::string> known_facts = gk.get_closest_items(dialogue, knowledge.known_fact_ids, 20);
+    int i = 0;
+    while (supplemental_info.size() < 512)
+    {
+        supplemental_info += known_facts[i++] + "\n\n";
+    }
+
+	return supplemental_info;
+}
+
+// Get a string response based on dialogue direction, original dialogue, and dialogue type
+std::string get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, Knowledge knowledge, DialogueType dialogueType)
+{
+    std::string supplemental_info = "";
+    if (direction == DialogueResponseDirection::Answer)
+    {
+        supplemental_info = get_relevant_knowledge(dialogue, knowledge);
+    }
+
     //TODO: incorporate direction and get Age/Enthusiasm
-    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction);
+    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info);
 
 
     return response;
 }
-
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
 std::string get_response(DialogueResponseDirection direction, std::string dialogue, Knowledge knowledge, DialogueType dialogueType)
 {
@@ -232,7 +254,7 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, DialogueType::Greeting);
+    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Greeting);
     
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -242,7 +264,7 @@ std::string get_npc_insult_response(std::string dialogue, Appearance appearance,
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, DialogueType::InsultNoun);
+    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::InsultNoun);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -252,7 +274,7 @@ std::string get_npc_statement_response(std::string dialogue, Appearance appearan
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Statement);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, DialogueType::Statement);
+    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Statement);
 
     //TODO: update actions/figure out if leave conversation
     return response;

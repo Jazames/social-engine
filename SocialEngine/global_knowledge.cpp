@@ -27,10 +27,26 @@ const std::string GlobalKnowledge::get_knowledge(size_t index) const {
 
 const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, int num_items) const
 {
+    return get_closest_items(phrase, mappings, num_items);
+}
+
+const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, std::vector<int> knowledge_ids, int num_items) const
+{
+    std::vector<Mapping> knowledge_mappings(knowledge_ids.size());
+    for (int i = 0; i < knowledge_ids.size(); i++) {
+        knowledge_mappings[i] = mappings[knowledge_ids[i]];
+    }
+
+    return get_closest_items(phrase, knowledge_mappings, num_items);
+}
+
+//private methods.
+const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, std::vector<Mapping> knowledge_mappings, int num_items) const
+{
     const std::vector<float> phrase_embedding = BertEmbedder::get_instance().get_embedding(phrase);
     std::vector<std::pair<float, std::string>> similarity_scores;
 
-    for (const auto& mapping : mappings) {
+    for (const auto& mapping : knowledge_mappings) {
         double similarity = cosine_similarity(phrase_embedding, mapping.embedding);
         similarity_scores.push_back({ similarity, mapping.phrase });
     }
@@ -45,7 +61,6 @@ const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string ph
     return closest_items;
 }
 
-//private methods.
 float GlobalKnowledge::cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const {
     float dot_product = 0.0;
     float norm_a = 0.0;

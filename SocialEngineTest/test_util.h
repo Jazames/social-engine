@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../SocialEngine/Personality.hpp"
+#include "../SocialEngine/personality.h"
 #include "../SocialEngine/dialogue.h"
-
 
 
 Personality get_default_personality();

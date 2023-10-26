@@ -65,4 +65,5 @@ struct Knowledge {
         return CharacterKnowledge();
     }
     std::vector<CharacterKnowledge> known_people;
+    std::vector<int> known_fact_ids;
 };
