@@ -40,6 +40,13 @@ const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string ph
     return get_closest_items(phrase, knowledge_mappings, num_items);
 }
 
+const float GlobalKnowledge::get_similarity(std::string phrase1, std::string phrase2) const
+{
+	const std::vector<float> phrase1_embedding = BertEmbedder::get_instance().get_embedding(phrase1);
+	const std::vector<float> phrase2_embedding = BertEmbedder::get_instance().get_embedding(phrase2);
+	return cosine_similarity(phrase1_embedding, phrase2_embedding);
+}
+
 //private methods.
 const std::vector<std::string> GlobalKnowledge::get_closest_items(std::string phrase, std::vector<Mapping> knowledge_mappings, int num_items) const
 {

@@ -6,8 +6,9 @@ find_package(GTest CONFIG REQUIRED)
 set(SOCIAL_ENGINE_TEST_SOURCES
     insult_disposition_direction_test.cpp
     greeting_disposition_direction_test.cpp
-    classifier_test.cpp
     embedding_test.cpp
+    classifier_test.cpp
+    response_test.cpp
     pch.cpp
     test_util.cpp
     main.cpp

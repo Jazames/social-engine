@@ -27,6 +27,7 @@ public:
 
     const std::vector<std::string> get_closest_items(std::string phrase, int num_items) const;
     const std::vector<std::string> get_closest_items(std::string phrase, std::vector<int> knowledge_ids, int num_items) const;
+    const float get_similarity(std::string phrase1, std::string phrase2) const;
 
 private:
     GlobalKnowledge() = default;  // Private constructor

@@ -203,7 +203,6 @@ Knowledge update_knowledge_from_interaction(Knowledge knowledge, DialogueRespons
     return knowledge;
 }
 
-
 std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 {
     const GlobalKnowledge& gk = GlobalKnowledge::get_instance();
