@@ -4,9 +4,12 @@ find_package(GTest CONFIG REQUIRED)
 
 # Specify the test source files
 set(SOCIAL_ENGINE_TEST_SOURCES
-    insult_disposition_direction_test.cpp
     greeting_disposition_direction_test.cpp
+    insult_disposition_direction_test.cpp
     question_disposition_direction_test.cpp
+    statement_disposition_direction_test.cpp
+    request_disposition_direction_test.cpp
+    compliment_disposition_direction_test.cpp
     embedding_test.cpp
     classifier_test.cpp
     response_test.cpp
