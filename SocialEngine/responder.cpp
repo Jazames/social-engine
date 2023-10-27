@@ -192,7 +192,7 @@ void Responder::do_greet_test()
 {
     std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
     std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
-    std::array<DialogueResponseDirection, 3> responses = { Greet, InsultVerb, Ignore };
+    std::array<DialogueResponseDirection, 3> responses = { Greet, Deride, Ignore };
 
     for (auto m : test_maturities)
     {
@@ -217,7 +217,7 @@ void Responder::do_insult_test()
         for (auto d : dialogues)
         {
             std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
-            std::cout << "Response: " << get_response(d, m, InsultVerb) << std::endl << std::endl;
+            std::cout << "Response: " << get_response(d, m, Deride) << std::endl << std::endl;
         }
     }
 }

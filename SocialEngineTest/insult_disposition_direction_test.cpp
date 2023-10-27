@@ -28,7 +28,7 @@ TEST(InsultResponseDirection, test_disagreeable_insult) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 TEST(InsultResponseDirection, test_polite_insult) {
@@ -69,7 +69,7 @@ TEST(InsultResponseDirection, test_high_volatility_insult_verb) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 TEST(InsultResponseDirection, test_high_industriousness_ignore) {
@@ -151,7 +151,7 @@ TEST(InsultResponseDirection, test_negative_loyalty_fight) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 TEST(InsultResponseDirection, test_low_openness_ignore) {
@@ -178,7 +178,7 @@ TEST(InsultResponseDirection, test_low_politeness_insult_verb) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 TEST(InsultResponseDirection, test_high_liberty_oppression_ignore) {
@@ -246,7 +246,7 @@ TEST(InsultResponseDirection, test_high_assertiveness_low_politeness_insult_verb
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 

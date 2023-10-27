@@ -34,11 +34,11 @@ TEST(DialogueClassificationTest, GreetingFailure) {
 }
 
 TEST(DialogueClassificationTest, InsultSuccess) {
-    ASSERT_EQ(get_classification("You are an idiot."), DialogueType::InsultNoun);
+    ASSERT_EQ(get_classification("You are an idiot."), DialogueType::Insult);
 }
 
 TEST(DialogueClassificationTest, InsultFailure) {
-    ASSERT_NE(get_classification("Can you help me?"), DialogueType::InsultNoun);
+    ASSERT_NE(get_classification("Can you help me?"), DialogueType::Insult);
 }
 
 TEST(DialogueClassificationTest, RequestSuccess) {
@@ -67,15 +67,15 @@ TEST(DialogueClassificationTest, RuderQuestion) {
 
 TEST(DialogueClassificationTest, RudestQuestion) {
     auto classification = get_classification("Are you a prostitute?");
-    EXPECT_TRUE(classification == Question || classification == DialogueType::InsultNoun);
+    EXPECT_TRUE(classification == Question || classification == DialogueType::Insult);
 }
 
 TEST(DialogueClassificationTest, InsultingQuestion) {
-    ASSERT_EQ(get_classification("Are you a whore?"), DialogueType::InsultNoun);
+    ASSERT_EQ(get_classification("Are you a whore?"), DialogueType::Insult);
 }
 
 TEST(DialogueClassificationTest, InsultingQuestion2) {
-    ASSERT_EQ(get_classification("Are you a retard?"), DialogueType::InsultNoun);
+    ASSERT_EQ(get_classification("Are you a retard?"), DialogueType::Insult);
 }
 
 TEST(DialogueClassificationTest, DangerousQuestion) {

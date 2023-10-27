@@ -3,7 +3,7 @@
 
 enum DialogueResponseDirection {
     Greet,
-    InsultVerb, //Synonmy for insult
+    Deride, //Synonym for insult
     Fight,
     Ignore,
     Wilt,

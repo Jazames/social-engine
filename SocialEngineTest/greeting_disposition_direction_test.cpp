@@ -90,7 +90,7 @@ TEST(GreetingResponseDirection, test_disagreeable_insult) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 TEST(GreetingResponseDirection, test_enthusiastic_greet) {
@@ -240,7 +240,7 @@ TEST(GreetingResponseDirection, test_unordered_insult) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
-    ASSERT_EQ(direction, InsultVerb);
+    ASSERT_EQ(direction, Deride);
 }
 
 
