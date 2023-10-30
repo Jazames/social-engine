@@ -148,7 +148,7 @@ TEST(GreetingResponseDirection, test_assertive_fight) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 TEST(GreetingResponseDirection, test_introverted_wilt) {
@@ -222,7 +222,7 @@ TEST(GreetingResponseDirection, test_aggressive_fight) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 TEST(GreetingResponseDirection, test_unordered_insult) {

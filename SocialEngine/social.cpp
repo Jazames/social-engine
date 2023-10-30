@@ -99,7 +99,7 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
         {
             if (gonna_act + anger > 0.4)
             {
-                return Fight;
+                return Threaten;
             }
             else
             {
@@ -175,7 +175,7 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
 
         if (angery > 0.5)
         {
-            return Fight;
+            return Threaten;
         }
         else if (angery > 0)
         {
@@ -237,7 +237,7 @@ DialogueResponseDirection get_question_response_direction(Disposition dispositio
 
         if (confrontation > 0.5)
         {
-            return Fight;
+            return Threaten;
         }
         else if (confrontation > 0)
         {

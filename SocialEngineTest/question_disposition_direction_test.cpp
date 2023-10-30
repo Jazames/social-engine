@@ -103,7 +103,7 @@ TEST(QuestionResponseDirection, test_combative_personality) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_question_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 // 4. Fight
@@ -118,7 +118,7 @@ TEST(QuestionResponseDirection, test_low_agreeable_volatile_personality) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_question_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 // 5. Ignore

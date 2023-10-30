@@ -96,7 +96,7 @@ TEST(InsultResponseDirection, test_negative_care_harm_fight) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 TEST(InsultResponseDirection, test_shy_wilt) {
@@ -218,7 +218,7 @@ TEST(InsultResponseDirection, test_negative_care_harm_high_volatility_fight) {
 
     Disposition disposition = get_disposition(a, k, p);
     DialogueResponseDirection direction = get_insult_response_direction(disposition, p);
-    ASSERT_EQ(direction, Fight);
+    ASSERT_EQ(direction, Threaten);
 }
 
 TEST(InsultResponseDirection, test_high_fairness_greet) {
