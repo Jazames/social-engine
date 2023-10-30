@@ -120,6 +120,12 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     }
 }
 
+
+DialogueResponseDirection get_compliment_response_direction(Disposition disposition, Personality personality)
+{
+    return Deride;
+}
+
 DialogueResponseDirection get_insult_response_direction(Disposition disposition, Personality personality)
 {
     double upstanding = 0.0;
@@ -181,6 +187,91 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
         }
     }
 }
+
+DialogueResponseDirection get_question_response_direction(Disposition disposition, Personality personality)
+{
+    double curiosity = 0.0;
+    curiosity += 0.3 * personality.traits.Openness;
+    curiosity += 0.2 * personality.traits.Intellect;
+    curiosity += 0.1 * personality.traits.Enthusiasm;
+    curiosity += 0.1 * personality.intelligence;
+    curiosity += 0.1 * disposition.friendliness;
+
+    if (curiosity > 0.35)
+    {
+        double honesty = 0.0;
+        honesty += 0.3 * personality.morals.fairness_cheating;
+        honesty += 0.2 * personality.traits.Politeness;
+        honesty -= 0.1 * personality.morals.loyalty_betrayal;
+        honesty += 0.1 * disposition.friendliness;
+
+        if (honesty > 0)
+        {
+            return Answer;
+        }
+        else
+        {
+            return Lie;
+        }
+    }
+    else
+    {
+        double avoidance = 0.0;
+        avoidance += 0.5 * personality.traits.Withdrawal;
+        avoidance -= 0.3 * personality.traits.Assertiveness;
+        avoidance -= 0.2 * personality.traits.Openness;
+
+        if (avoidance > 0)
+        {
+            return Ignore;
+        }
+
+        double confrontation = 0.0;
+        confrontation -= 0.9 * disposition.friendliness;
+        confrontation += 0.3 * personality.traits.Volatility;
+        confrontation -= 0.4 * personality.traits.Agreeableness();
+        confrontation += 0.2 * personality.traits.Assertiveness;
+        confrontation -= 0.5 * personality.morals.care_harm;
+        confrontation += 0.5 * personality.morals.loyalty_betrayal;
+        confrontation -= 0.2 * personality.morals.fairness_cheating;
+
+        if (confrontation > 0.5)
+        {
+            return Fight;
+        }
+        else if (confrontation > 0)
+        {
+            return Deride;
+        }
+        else
+        {
+            double vulnerability = 0.0;
+            vulnerability += 0.5 * personality.traits.Withdrawal;
+            vulnerability -= 0.3 * personality.traits.Assertiveness;
+            vulnerability -= 0.2 * personality.morals.liberty_oppression;
+
+            if (vulnerability > 0)
+            {
+                return Wilt;
+            }
+            else
+            {
+                return Ignore;
+            }
+        }
+    }
+}
+
+DialogueResponseDirection get_statement_response_direction(Disposition disposition, Personality personality)
+{
+    return Deride;
+}
+
+DialogueResponseDirection get_request_response_direction(Disposition disposition, Personality personality)
+{
+    return Deride;
+}
+
 
 // Get the direction of dialogue response based on disposition, personality, and dialogue type
 DialogueResponseDirection get_dialogue_response_direction(Disposition disposition, Personality personality, DialogueType dialogueType)
