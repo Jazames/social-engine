@@ -13,7 +13,8 @@ enum DialogueResponseDirection {
     Lie,
     Assist,
     Decline,
-    Sabotage
+    Sabotage,
+    Thank
 };
 
 struct Disposition {
