@@ -190,74 +190,64 @@ DialogueResponseDirection get_insult_response_direction(Disposition disposition,
 
 DialogueResponseDirection get_question_response_direction(Disposition disposition, Personality personality)
 {
-    double curiosity = 0.0;
-    curiosity += 0.3 * personality.traits.Openness;
-    curiosity += 0.2 * personality.traits.Intellect;
-    curiosity += 0.1 * personality.traits.Enthusiasm;
-    curiosity += 0.1 * personality.intelligence;
-    curiosity += 0.1 * disposition.friendliness;
+    double desire_to_help = disposition.friendliness;
+    desire_to_help += 0.3 * personality.traits.Politeness;
+    desire_to_help += 0.3 * personality.traits.Intellect;
+    desire_to_help += 0.1 * personality.traits.Openness;
+    desire_to_help += 0.1 * personality.traits.Enthusiasm;
+    desire_to_help += 0.2 * personality.morals.care_harm;
+    desire_to_help -= 0.2 * personality.traits.Withdrawal;
+    desire_to_help += 0.1 * personality.morals.loyalty_betrayal;
 
-    if (curiosity > 0.35)
+    if (desire_to_help > 0)
     {
-        double honesty = 0.0;
-        honesty += 0.3 * personality.morals.fairness_cheating;
-        honesty += 0.2 * personality.traits.Politeness;
-        honesty -= 0.1 * personality.morals.loyalty_betrayal;
-        honesty += 0.1 * disposition.friendliness;
-
-        if (honesty > 0)
-        {
-            return Answer;
-        }
-        else
-        {
-            return Lie;
-        }
+        return Answer;
     }
     else
     {
-        double avoidance = 0.0;
-        avoidance += 0.5 * personality.traits.Withdrawal;
-        avoidance -= 0.3 * personality.traits.Assertiveness;
-        avoidance -= 0.2 * personality.traits.Openness;
-
-        if (avoidance > 0)
+        double malicious = 0.0;
+        malicious += 0.1 * personality.traits.Volatility;
+        malicious -= 0.5 * personality.morals.care_harm;
+        malicious -= 0.2 * personality.morals.loyalty_betrayal;
+        malicious -= 0.2 * personality.morals.authority_subversion;
+        malicious -= 0.2 * personality.morals.fairness_cheating;
+        
+        if (malicious > 0)
         {
-            return Ignore;
-        }
-
-        double confrontation = 0.0;
-        confrontation -= 0.9 * disposition.friendliness;
-        confrontation += 0.3 * personality.traits.Volatility;
-        confrontation -= 0.4 * personality.traits.Agreeableness();
-        confrontation += 0.2 * personality.traits.Assertiveness;
-        confrontation -= 0.5 * personality.morals.care_harm;
-        confrontation += 0.5 * personality.morals.loyalty_betrayal;
-        confrontation -= 0.2 * personality.morals.fairness_cheating;
-
-        if (confrontation > 0.5)
-        {
-            return Threaten;
-        }
-        else if (confrontation > 0)
-        {
-            return Deride;
-        }
-        else
-        {
-            double vulnerability = 0.0;
-            vulnerability += 0.5 * personality.traits.Withdrawal;
-            vulnerability -= 0.3 * personality.traits.Assertiveness;
-            vulnerability -= 0.2 * personality.morals.liberty_oppression;
-
-            if (vulnerability > 0)
+            if (malicious > 0.3)
             {
-                return Wilt;
+                double unhinged = 0.0;
+                unhinged += 0.5 * personality.traits.Volatility;
+                unhinged -= 0.1 * personality.traits.Withdrawal;
+                unhinged += 0.1 * personality.traits.Assertiveness;
+                if (unhinged > 0.0)
+                {
+                    return Threaten;
+                }
+                else
+                {
+                    return Lie;
+                }
             }
             else
             {
-                return Ignore;
+			    return Deride;
             }
+        }
+        else
+        {
+            double avoidance = 0.0;
+            avoidance += 0.5 * personality.traits.Withdrawal;
+            avoidance -= 0.3 * personality.traits.Assertiveness;
+            avoidance -= 0.2 * personality.traits.Openness;
+            if (avoidance > 0)
+            {
+                return Wilt;
+            }
+			else
+			{
+				return Ignore;
+			}
         }
     }
 }
