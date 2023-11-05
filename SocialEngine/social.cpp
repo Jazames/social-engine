@@ -408,6 +408,15 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
     }
 }
 
+std::string get_default_response(std::string dialogue)
+{
+    Appearance appearance = Appearance();
+    Personality personality = Personality();
+    Knowledge knowledge = Knowledge();
+
+    return get_npc_response(dialogue, appearance, personality, knowledge);
+}
+
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

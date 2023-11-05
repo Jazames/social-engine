@@ -38,6 +38,7 @@ int main()
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;
+    std::cout << "NPC response is: " << get_default_response(dialogue) << std::endl;
     std::cout << "Finished warming up" << std::endl << std::endl;
 
 

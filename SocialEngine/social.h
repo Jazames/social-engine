@@ -6,6 +6,7 @@
 
 DialogueType get_classification(std::string dialogue);
 
+std::string get_default_response(std::string);
 std::string get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge);
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality);

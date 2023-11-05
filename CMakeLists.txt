@@ -329,6 +329,12 @@ if (LLAMA_ALL_WARNINGS)
                 set(host_cxx_flags ${host_cxx_flags} -Wextra-semi)
             endif()
         endif()
+    elseif(MSVC)    
+        add_compile_options(
+            $<$<CONFIG:>:/MT> #---------|
+            $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
+            $<$<CONFIG:Release>:/MT> #--|
+        )
     else()
         # todo : msvc
     endif()

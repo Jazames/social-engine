@@ -17,6 +17,6 @@ cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=/c/vcpkg/scrip
 
 echo "Building"
 cmake --build . --config Release
-cmake --build . --config Debug
+# cmake --build . --config Debug
 
 echo "Completed!"
