@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 #include "personality.h"
-#include "classifier.h"
+#include "bert_classifier.h"
 #include "responder.h"
 #include "dialogue.h"
 #include "global_knowledge.h"
@@ -327,7 +327,7 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
 DialogueType get_classification(std::string dialogue)
 {
-    return Classifier::get_instance().get_classification(dialogue);
+    return BertClassifier::get_instance().get_classification(dialogue);
 }
 
 std::string get_npc_greeting_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {

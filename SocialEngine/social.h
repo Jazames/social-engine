@@ -1,6 +1,6 @@
 #pragma once
 
-#include "classifier.h"
+#include "bert_classifier.h"
 #include "Personality.h"
 #include "dialogue.h"
 

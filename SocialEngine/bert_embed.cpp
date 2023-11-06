@@ -44,7 +44,7 @@ std::vector<float> BertEmbedder::get_embedding(const std::string& prompt)
 BertEmbedder::BertEmbedder() {
     // Initialization logic
     //params.embedding = true;
-    params.model = "C:\\Users\\James\\source\\repos\\SocialEngine\\bert.cpp\\models\\all-MiniLM-L12-v2\\ggml-model-f16.bin";
+    params.model = "C:\\Users\\James\\source\\repos\\SocialEngine\\bertCpp\\models\\all-MiniLM-L12-v2\\ggml-model-f16.bin";
     //params.seed = time(NULL);;
 
     // init LLM

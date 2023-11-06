@@ -4,6 +4,7 @@
 
 #include "social.h"
 #include "classifier.h"
+#include "bert_classifier.h"
 #include "responder.h"
 #include "llama_embed.h"
 
@@ -33,7 +34,7 @@ int main()
     std::cout << "Warming up." << std::endl;
     std::string dialogue = "Hello fine kitty.";// "Are you a whore?";
     Embedder::get_instance().get_embedding(dialogue);
-    auto classification = Classifier::get_instance().get_classification(dialogue);
+    auto classification = BertClassifier::get_instance().get_classification(dialogue);
     std::string response = Responder::get_instance().get_response(dialogue, Young, Greet);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;

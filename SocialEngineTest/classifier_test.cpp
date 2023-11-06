@@ -1,10 +1,10 @@
 
 #include "pch.h"
-#include "../SocialEngine/classifier.h"
+#include "../SocialEngine/bert_classifier.h"
 #include "../SocialEngine/social.h"
 
 
-namespace slow
+namespace medium
 {
 
     class ClassificationEnvironment : public ::testing::Environment {
@@ -14,7 +14,7 @@ namespace slow
             std::cout << "Classification setup\n";
 
             //warmup classification.
-            Classifier::get_instance().get_classification("WHAT?");
+            BertClassifier::get_instance().get_classification("WHAT?");
 
             std::cout << "Classification Warmed Up" << std::endl;
 
