@@ -1,0 +1,11 @@
+# SCsub
+Import('env')
+
+env_bert = env.Clone()
+
+
+env_bert.Append(CPPPATH=['.'])
+env_bert.Append(CPPPATH=["../llamaCpp"])
+env_bert.Append(CXXFLAGS=['/std:c++17'])
+
+env_bert.add_source_files(env.modules_sources,"bert.cpp") # just add all cpp files to the build
