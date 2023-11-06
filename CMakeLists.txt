@@ -394,7 +394,7 @@ add_subdirectory(llamaCpp)
 add_subdirectory(SocialEngine)
 add_subdirectory(SocialEngineTest)
 add_subdirectory(Run)
-add_subdirectory(bert.cpp)
+add_subdirectory(bertCpp)
 
 # If you need to enable testing for your project
 enable_testing()
