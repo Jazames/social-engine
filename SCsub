@@ -1,0 +1,6 @@
+# SCsub
+Import('env')
+
+
+SConscript('SocialEngine/SCsub')
+SConscript('bertCpp/SCsub')

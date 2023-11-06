@@ -1,0 +1,90 @@
+
+Import('env')
+
+env_soc_eng = env.Clone()
+
+
+# Define the target name
+TARGET = 'SocialEngine'
+# SCsub
+# Specify the source files
+SOCIAL_ENGINE_SOURCES = [
+    'classifier.cpp',
+    'responder.cpp',
+    'social.cpp',
+    'util.cpp',
+    'llama_embed.cpp',
+    'bert_embed.cpp',
+    'global_knowledge.cpp',
+    # ... add other source files here ...
+]
+
+# Specify the header files
+SOCIAL_ENGINE_HEADERS = [
+    'classifier.h',
+    'responder.h',
+    'social.h',
+    'util.h',
+    'llama_embed.h',
+    'bert_embed.h',
+    'personality.h',
+    'dialogue.h',
+    'global_knowledge.h',
+]
+
+# Combine sources and headers
+sources_and_headers = SOCIAL_ENGINE_SOURCES + SOCIAL_ENGINE_HEADERS
+
+env_soc_eng.add_source_files(env.modules_sources, SOCIAL_ENGINE_SOURCES)
+
+env_soc_eng.Append(CPPPATH=['.'])
+env_soc_eng.Append(CPPPATH=["../llamaCpp"])
+env_soc_eng.Append(CPPPATH=["../llamaCpp/common"])
+env_soc_eng.Append(CPPPATH=["../bertCpp"])
+
+# LIBPATH and LIBS need to be set on the real "env" (not the clone)
+# to link the specified libraries to the Godot executable.
+
+# This is a path relative to /modules/tts/ where your .a libraries reside.
+# If you are compiling the module externally (not in the godot source tree),
+# these will need to be full paths.
+
+env_soc_eng.StaticLibrary(target='llama', source='C:\LlamaCpp\lib\llama.lib')
+env_soc_eng.StaticLibrary(target='clip', source='C:\LlamaCpp\lib\clip.lib')
+#env.Append(LIBPATH=['C:\LlamaCpp\lib'])
+#env_soc_eng.Append(LIBPATH=['C:\LlamaCpp\lib'])
+
+# Check with the documentation of the external library to see which library
+# files should be included/linked.
+env.Append(LIBS=['llama', 'clip'])
+#env_soc_eng.Append(LIBS=['llama'])
+
+
+# Link to Cuda
+env_soc_eng.StaticLibrary(target='cudart', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64\\cudart.lib")
+env_soc_eng.StaticLibrary(target='cublas', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64\\cublas.lib")
+#env.Append(LIBPATH=["C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64"])
+env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\modules\\social_engine\\social-engine\\SocialEngine"]) #For cuda libs
+env.Append(LIBS=['cudart', 'cublas'])
+
+
+# Create an object library (equivalent to add_library in CMake)
+# Note: In SCons, headers do not typically need to be specified in the build target,
+# as it automatically handles header dependencies. They are included here for completeness.
+#lib = env.Object(TARGET, sources_and_headers)
+
+# Check if shared libraries are to be built
+#if ARGUMENTS.get('BUILD_SHARED_LIBS', '0') == '1':
+#    env.Append(CPPFLAGS=['-fPIC'])
+
+# Set target properties and include directories
+#env.Append(CPPPATH=['.'])
+#env.Append(CPPFLAGS=['-std=c++11'])  # Equivalent to target_compile_features in CMake
+
+# Linking libraries
+#env.Depends(lib, ['llama', 'common', 'bert'])
+
+# To create a shared or static library from the objects, you can use:
+# shared_lib = env.SharedLibrary(target=TARGET, source=lib)
+# or
+# static_lib = env.StaticLibrary(target=TARGET, source=lib)
