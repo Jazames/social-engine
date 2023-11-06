@@ -31,6 +31,7 @@ private:
     };
 
 
+    void add_classification(DialogueType classification, const std::string& description);
     float cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const;
     std::vector<float> normalize(const std::vector<float>& vec) const;
 

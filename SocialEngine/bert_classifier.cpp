@@ -26,45 +26,38 @@ DialogueType BertClassifier::get_classification(const std::string& dialogue)
 
 BertClassifier::BertClassifier()
 {
-    Embedding greeting;
-    greeting.classification = DialogueType::Greeting;
-    greeting.description = "Greeting";
-    greeting.embedding = BertEmbedder::get_instance().get_embedding(greeting.description);
-    classifications.push_back(greeting);
+    add_classification(Greeting, "Greeting");
 
-    Embedding compliment;
-    compliment.classification = DialogueType::Compliment;
-    compliment.description = "Compliment";
-    compliment.embedding = BertEmbedder::get_instance().get_embedding(compliment.description);
-    classifications.push_back(compliment);
+    add_classification(Compliment, "Compliment");
+    add_classification(Compliment, "virtues");
+    add_classification(Compliment, "attractive");
+    add_classification(Compliment, "intelligent");
+    add_classification(Compliment, "kind");
 
-    Embedding insult;
-    insult.classification = DialogueType::Insult;
-    insult.description = "Insult";
-    insult.embedding = BertEmbedder::get_instance().get_embedding(insult.description);
-    classifications.push_back(insult);
+    add_classification(Insult, "dumb");
+    add_classification(Insult, "ugly");
+    add_classification(Insult, "vice");
+    add_classification(Insult, "sin");
+    add_classification(Insult, "contemptable");
 
-    Embedding request;
-    request.classification = DialogueType::Request;
-    request.description = "Request";
-    request.embedding = BertEmbedder::get_instance().get_embedding(request.description);
-    classifications.push_back(request);
+    add_classification(Request, "Request, will you, can you");
 
-    Embedding question;
-    question.classification = DialogueType::Question;
-    question.description = "Question";
-    question.embedding = BertEmbedder::get_instance().get_embedding(question.description);
-    classifications.push_back(question);
+    add_classification(Question, "question, rude questions");
+    add_classification(Question, "where is");
+    add_classification(Question, "who is");
+    add_classification(Question, "what is");
 
-    Embedding statement;
-    statement.classification = DialogueType::Statement;
-    statement.description = "Statement";
-    statement.embedding = BertEmbedder::get_instance().get_embedding(statement.description);
-    classifications.push_back(statement);
-
+    add_classification(Statement, "dull statement");
 }
 
-
+void BertClassifier::add_classification(DialogueType classification, const std::string& description)
+{
+	Embedding new_classification;
+	new_classification.classification = classification;
+	new_classification.description = description;
+	new_classification.embedding = BertEmbedder::get_instance().get_embedding(description);
+	classifications.push_back(new_classification);
+}
 
 float BertClassifier::cosine_similarity(const std::vector<float>& a, const std::vector<float>& b) const {
     float dot_product = 0.0;
