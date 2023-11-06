@@ -1,7 +1,44 @@
 #!/bin/bash
 
-# TODO make this not erase everything
 
+#Adjust the llama cmakelists file.
+echo "Modifying llamaCpp CMakeLists"
+
+
+# Define the file path
+FILE="llamaCpp/CMakeLists.txt"
+
+# Check if the file exists
+if [ ! -f "$FILE" ]; then
+    echo "Error: File $FILE does not exist."
+    exit 1
+fi
+
+# Create a temporary file
+TEMP_FILE=$(mktemp)
+
+# Use awk to edit the file
+awk '
+    /cmake_minimum_required\(/ {
+        print
+        print "cmake_policy(SET CMP0091 NEW)"
+        next
+    }
+    /set\(CMAKE_C_STANDARD_REQUIRED true\)/ {
+        print
+        print "set(CMAKE_MSVC_RUNTIME_LIBRARY \"MultiThreaded\$<\$<CONFIG:Debug>:Debug>\")"
+        next
+    }
+    { print }
+' "$FILE" > "$TEMP_FILE"
+
+# Replace original file with the modified one
+mv "$TEMP_FILE" "$FILE"
+
+echo "Done modifying"
+
+
+#build llama
 cd llamaCpp
 
 if [ -d "build" ]; then
@@ -21,6 +58,13 @@ cmake --build . --config Release
 
 echo "Installing to C:/LlamaCpp"
 cmake --install . --prefix C:/LlamaCpp
+
+echo "Cleaning up"
+
+cd ..
+git reset --hard
+
+echo "Finished"
 
 
 
