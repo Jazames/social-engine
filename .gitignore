@@ -10,6 +10,8 @@ build/
 [Ll]ibrary_[Bb]uild/
 
 
+*.x86_64.lib
+
 # User-specific files
 *.rsuser
 *.suo

@@ -4,6 +4,7 @@ set(TARGET SocialEngine)
 # Specify the source files
 set(SOCIAL_ENGINE_SOURCES
     classifier.cpp
+    lightweight_classifier.cpp
     responder.cpp
     social.cpp
     util.cpp
@@ -15,6 +16,7 @@ set(SOCIAL_ENGINE_SOURCES
 # Specify the header files
 Set(SOCIAL_ENGINE_HEADERS
     classifier.h
+    lightweight_classifier.h
     responder.h
     social.h
     util.h
