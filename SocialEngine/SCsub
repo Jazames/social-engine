@@ -9,7 +9,8 @@ TARGET = 'SocialEngine'
 # SCsub
 # Specify the source files
 SOCIAL_ENGINE_SOURCES = [
-    'classifier.cpp',
+    'llama_classifier.cpp',
+    'bert_classifier.cpp',
     'responder.cpp',
     'social.cpp',
     'util.cpp',
@@ -22,6 +23,8 @@ SOCIAL_ENGINE_SOURCES = [
 # Specify the header files
 SOCIAL_ENGINE_HEADERS = [
     'classifier.h',
+    'bert_classifier.h',
+    'llama_classifier.h',
     'responder.h',
     'social.h',
     'util.h',
