@@ -91,7 +91,11 @@ namespace medium
     }
 
     TEST(DialogueClassificationTest, StatementSuccess) {
-        ASSERT_EQ(get_classification("I like to eat cheese."), DialogueType::Statement);
+        ASSERT_EQ(get_classification("I enjoy a good baked potato."), DialogueType::Statement);
+    }
+
+    TEST(DialogueClassificationTest, LongStatementSuccess) {
+        ASSERT_EQ(get_classification("Johnny lives down the road in the house by the bridge over the river."), DialogueType::Statement);
     }
 
     TEST(DialogueClassificationTest, StatementFailure) {

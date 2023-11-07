@@ -10,7 +10,19 @@
 
 
 
-std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
+std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info, bool use_llama)
+{
+    if (use_llama)
+    {
+        return get_llama_response(dialogue, maturity, response_direction, supplemental_info);
+    }
+    else
+    {
+		return get_canned_response(dialogue, maturity, response_direction, supplemental_info);
+	}
+}
+
+std::string Responder::get_llama_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
 {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
@@ -397,6 +409,7 @@ Responder::Responder() {
     llama_backend_init(params.numa);
 
 
+    
     std::tie(model, ctx) = llama_init_from_gpt_params(params);
     if (model == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
@@ -413,4 +426,80 @@ Responder::~Responder() {
     llama_free(ctx);
     llama_free_model(model);
     llama_backend_free();
+}
+
+
+std::string Responder::get_canned_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
+{
+    std::vector<std::string> greetings = {
+        "Hello!",
+        "Hi there!",
+        "Good morning!",
+        "Good afternoon!",
+        "Good evening!",
+        "How are you?",
+        "How's it going?",
+        "What's up?",
+        "Howdy!",
+        "Greetings!",
+        "Nice to meet you!",
+        "Pleased to meet you!",
+        "It's a pleasure to meet you!",
+        "Long time no see!",
+        "Hey there!",
+        "What's new?",
+        "What's happening?",
+        "How's everything?",
+        "How's life treating you?",
+        "How have you been?",
+        "Welcome!",
+        "Great to see you!",
+        "Lovely to meet you!",
+        "How do you do?",
+        "Hiya!",
+        "Good to see you!",
+        "Hey!",
+        "Hello again!",
+        "Look who it is!",
+        "Top of the morning to you!"
+    };
+
+    std::vector<std::string> insults = {
+        "Bug off",
+        "Get bent",
+        "Cry me a river",
+        "Eat my shorts",
+        "Ha Ha",
+        "Ok, boomer",
+        "Whatever you say, boomer",
+        "Jackass"
+        "You're a waste of oxygen",
+        "Go to hell.",
+        "Idiot."
+        "Moron.",
+        "Suck a lemon.",
+        "Take off, hoser"
+    };
+
+    std::vector<std::string> threats = {
+        "You're asking for a whuppin",
+        "Them is fightin words",
+        "Are you threatening me?",
+        "You wanna go at it?",
+        "Catch me outside, how bout dat?",
+        "You wanna take this outside?",
+        "You asked for this",
+        "Some people just need killin",
+        "You're cruisin for a bruisin"
+    };
+
+    std::map<DialogueResponseDirection, std::vector<std::string>> responses = {
+        { DialogueResponseDirection::Greet, greetings },
+        { DialogueResponseDirection::Deride, insults },
+        { DialogueResponseDirection::Threaten,  threats }
+    };
+
+    std::vector<std::string> r = responses[response_direction];
+    int index = rand() % r.size();
+    return r[index];
 }

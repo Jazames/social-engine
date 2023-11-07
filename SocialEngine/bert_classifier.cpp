@@ -20,8 +20,17 @@ DialogueType BertClassifier::get_classification(const std::string& dialogue)
         return a.first > b.first; // Descending order
         });  // Sort in descending order of similarity
 
+    float similarity = similarity_scores.front().first;
 
-    return similarity_scores.front().second.classification;
+    if (similarity > 0.20f)
+    {
+        return similarity_scores.front().second.classification;
+    }
+    else
+    {
+        //Statement is kinda an "other" category, so rather than trying to match it semantically, we'll just return it if nothing else is close.
+		return Statement;
+	}
 }
 
 BertClassifier::BertClassifier()
@@ -29,15 +38,14 @@ BertClassifier::BertClassifier()
     add_classification(Greeting, "Greeting");
 
     add_classification(Compliment, "Compliment");
-    add_classification(Compliment, "virtues");
-    add_classification(Compliment, "attractive");
-    add_classification(Compliment, "intelligent");
-    add_classification(Compliment, "kind");
+    add_classification(Compliment, "virtuous");
+    //add_classification(Compliment, "attractive");
+    add_classification(Compliment, "wise");
+    //add_classification(Compliment, "kind");
+    add_classification(Compliment, "strong");
 
     add_classification(Insult, "dumb");
     add_classification(Insult, "ugly");
-    add_classification(Insult, "vice");
-    add_classification(Insult, "sin");
     add_classification(Insult, "contemptable");
 
     add_classification(Request, "Request, will you, can you");
@@ -47,7 +55,9 @@ BertClassifier::BertClassifier()
     add_classification(Question, "who is");
     add_classification(Question, "what is");
 
-    add_classification(Statement, "dull statement");
+    //add_classification(Statement, "dull statement");
+    //add_classification(Statement, "facts about the world");
+    //add_classification(Statement, "");
 }
 
 void BertClassifier::add_classification(DialogueType classification, const std::string& description)

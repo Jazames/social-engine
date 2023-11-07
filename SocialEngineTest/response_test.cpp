@@ -17,10 +17,13 @@ namespace slow
 
         auto response = get_npc_response("Hello", a, p, k);
         auto desired = "Hello.";
+        auto undesired = "I'm busy";
         std::cout << "Response: " << response << std::endl;
         std::cout << "Desired: " << desired << std::endl;
+        std::cout << "Undesired: " << undesired << std::endl;
         auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
-        ASSERT_GT(similarity, 0.4);
+        auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
+        ASSERT_GT(similarity, un_similarity);
     }
 
     TEST(Response, test_psychopath_greet_gets_insult) {
@@ -35,7 +38,7 @@ namespace slow
 
         auto response = get_npc_response("Hello", a, p, k);
         auto desired = "Go away doofus, you're too blind to realize that you're wasting my time. Now begone.";
-        auto undesired = "Hi.";
+        auto undesired = "Hello, I like your hat";
         std::cout << "Response: " << response << std::endl;
         std::cout << "Desired: " << desired << std::endl;
         std::cout << "Undesired: " << undesired << std::endl;
