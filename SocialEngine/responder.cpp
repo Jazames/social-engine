@@ -34,7 +34,7 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
 
     params.prompt = build_prompt(dialogue, maturity, response_direction);
 
-    const int n_ctx_train = llama_n_ctx_train(model);
+    //const int n_ctx_train = llama_n_ctx_train(model);
     const int n_ctx = llama_n_ctx(ctx);
 
     const bool add_bos = llama_vocab_type(model) == LLAMA_VOCAB_TYPE_SPM;
@@ -53,7 +53,6 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
     int n_past = 0;
     int n_remain = params.n_predict;
     int n_consumed = 0;
-    int n_session_consumed = 0;
     int n_past_guidance = 0;
 
 

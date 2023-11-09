@@ -18,7 +18,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
 
     params.prompt = prompt_instructions + dialogue + ".\n";
 
-    const int n_ctx_train = llama_n_ctx_train(model);
+    //const int n_ctx_train = llama_n_ctx_train(model);
     const int n_ctx = llama_n_ctx(ctx);
 
     const bool add_bos = llama_vocab_type(model) == LLAMA_VOCAB_TYPE_SPM;
@@ -33,11 +33,10 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
     }
 
     bool input_echo = true;
-     
+    
     int n_past = 0;
     int n_remain = params.n_predict;
     int n_consumed = 0;
-    int n_session_consumed = 0;
     int n_past_guidance = 0;
 
 

@@ -266,12 +266,12 @@ DialogueResponseDirection get_request_response_direction(Disposition disposition
 // Get the direction of dialogue response based on disposition, personality, and dialogue type
 DialogueResponseDirection get_dialogue_response_direction(Disposition disposition, Personality personality, DialogueType dialogueType)
 {
-    DialogueResponseDirection direction;
+    DialogueResponseDirection direction = Greet;
 
     // Stub: Placeholder logic. Actual logic to determine dialogue direction goes here.
     // E.g., if disposition is neutral, personality is aggressive, and dialogue type is greeting, set direction to "Insult".
 
-    return Greet;
+    return direction;
 }
 
 // Update character's knowledge based on the interaction
@@ -310,20 +310,22 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
     //TODO: incorporate direction and get Age/Enthusiasm
     std::string response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info);
-
+	//std::string response = "Go hand me a beer.";
 
     return response;
 }
+/*
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
 std::string get_response(DialogueResponseDirection direction, std::string dialogue, Knowledge knowledge, DialogueType dialogueType)
 {
-    std::string response;
+    std::string response = "Fill me out so I'm worth something.";
 
     // Stub: Placeholder logic. Actual logic to generate a response string goes here.
     // E.g., if direction is "Greet", return "Hello, traveler!"
 
     return response;
 }
+*/
 
 DialogueType get_classification(std::string dialogue)
 {
@@ -334,7 +336,7 @@ std::string get_npc_greeting_response(std::string dialogue, Appearance appearanc
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
     knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Greeting);
+	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Greeting);
     
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -365,8 +367,8 @@ std::string get_npc_question_response(std::string dialogue, Appearance appearanc
     DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Question);
     
     //TODO: Might need something to get filtered knowledge?
-    knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, knowledge, DialogueType::Question);
+	knowledge = update_knowledge_from_interaction(knowledge, direction);
+	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Question);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -376,11 +378,11 @@ std::string get_npc_request_response(std::string dialogue, Appearance appearance
     Disposition disposition = get_disposition(appearance, knowledge, personality);
     //TODO: Figure out how to Get Check knowledge to determine what's required for the request, whether that aligns with goals, etc.
 
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Question);
+    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Request);
 
     //TODO: Might need something to get filtered knowledge?
-    knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, knowledge, DialogueType::Question);
+	knowledge = update_knowledge_from_interaction(knowledge, direction);
+	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Request);
 
     //TODO: update actions/figure out if leave conversation
     return response;
@@ -415,6 +417,7 @@ std::string get_default_response(std::string dialogue)
     Knowledge knowledge = Knowledge();
 
     return get_npc_response(dialogue, appearance, personality, knowledge);
+	//return "I don't like your girlfriend.";
 }
 
 
