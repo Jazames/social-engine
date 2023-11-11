@@ -53,13 +53,13 @@ env_soc_eng.Append(CPPPATH=["../bertCpp"])
 # these will need to be full paths.
 
 env_soc_eng.StaticLibrary(target='llama', source='C:\LlamaCpp\lib\llama.lib')
-env_soc_eng.StaticLibrary(target='clip', source='C:\LlamaCpp\lib\clip.lib')
+env_soc_eng.StaticLibrary(target='common', source='C:\LlamaCpp\lib\common.lib')
 #env.Append(LIBPATH=['C:\LlamaCpp\lib'])
 #env_soc_eng.Append(LIBPATH=['C:\LlamaCpp\lib'])
 
 # Check with the documentation of the external library to see which library
 # files should be included/linked.
-env.Append(LIBS=['llama', 'clip'])
+env.Append(LIBS=['llama', 'common'])
 #env_soc_eng.Append(LIBS=['llama'])
 
 

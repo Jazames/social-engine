@@ -38,6 +38,20 @@ awk '
 # Replace original file with the modified one
 mv "$TEMP_FILE" "$FILE"
 
+
+# Modify the common CMakeLists.txt file
+FILE="llamaCpp/common/CMakeLists.txt"
+
+# Check if the file exists
+if [ ! -f "$FILE" ]; then
+    echo "Error: File $FILE does not exist."
+    exit 1
+fi
+
+# Append the line to the file
+echo "install(TARGETS common)" >> "$FILE"
+
+
 echo "Done modifying"
 
 
