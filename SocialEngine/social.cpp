@@ -7,12 +7,21 @@
 #include "responder.h"
 #include "dialogue.h"
 #include "global_knowledge.h"
+#include "bert_embed.h"
 
 void init_social_engine()
 {
 	BertClassifier::get_instance();
 	GlobalKnowledge::get_instance();
 	Responder::get_instance();
+}
+
+void deinit_social_engine()
+{
+	BertClassifier::get_instance().deinit();
+	GlobalKnowledge::get_instance().deinit();
+	Responder::get_instance().deinit();
+	BertEmbedder::get_instance().deinit();
 }
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
@@ -315,7 +324,7 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
     }
 
     //TODO: incorporate direction and get Age/Enthusiasm
-    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info);
+    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info, true);
 	//std::string response = "Go hand me a beer.";
 
     return response;

@@ -6,6 +6,7 @@
 
 
 void init_social_engine();
+void deinit_social_engine();
 
 DialogueType get_classification(std::string dialogue);
 

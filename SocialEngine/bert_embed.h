@@ -17,6 +17,10 @@ public:
 
     std::vector<float> get_embedding(const std::string& prompt);
 
+	void deinit() {
+		BertEmbedder::~BertEmbedder();
+	}
+
 private:
     bert_ctx * bctx;
     bert_params params;

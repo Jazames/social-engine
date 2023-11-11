@@ -121,3 +121,8 @@ void GlobalKnowledge::reset()
 {
     mappings.clear();
 }
+
+GlobalKnowledge::~GlobalKnowledge()
+{
+	reset();
+}

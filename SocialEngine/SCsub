@@ -63,12 +63,22 @@ env.Append(LIBS=['llama', 'common'])
 #env_soc_eng.Append(LIBS=['llama'])
 
 
-# Link to Cuda
-env_soc_eng.StaticLibrary(target='cudart', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\lib\\x64\\cudart_static.lib")
-env_soc_eng.StaticLibrary(target='cublas', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\lib\\x64\\cublas.lib")
-#env.Append(LIBPATH=["C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64"])
-env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\servers\\social_engine\\social-engine\\SocialEngine"]) #For cuda libs
-env.Append(LIBS=['cudart', 'cublas'])
+## Link to Cuda
+#env_soc_eng.StaticLibrary(target='cudart', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\lib\\x64\\cudart_static.lib")
+#env_soc_eng.StaticLibrary(target='cublas', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.8\\lib\\x64\\cublas.lib")
+##env.Append(LIBPATH=["C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64"])
+#env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\servers\\social_engine\\social-engine\\SocialEngine"]) #For cuda libs
+#env.Append(LIBS=['cudart', 'cublas'])
+
+# Link to CL_BLAST
+env_soc_eng.StaticLibrary(target='clblast', source="C:\\vcpkg\\packages\\clblast_x64-windows\\lib\\clblast.lib")
+env_soc_eng.StaticLibrary(target='OpenCL', source="C:\\vcpkg\\packages\\opencl_x64-windows\\lib\\OpenCL.lib")
+env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\servers\\social_engine\\social-engine\\SocialEngine"]) #For clblast libs
+env.Append(LIBS=['clblast', 'OpenCL'])
+# TODO: Something needs to copy clblast.dll to the godot output directory.
+
+
+
 
 
 # Create an object library (equivalent to add_library in CMake)

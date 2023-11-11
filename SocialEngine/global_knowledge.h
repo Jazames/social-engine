@@ -15,6 +15,10 @@ public:
         static GlobalKnowledge instance;  // Guaranteed to be destroyed; Instantiated on first use
         return instance;
     }
+
+	void deinit() {
+		GlobalKnowledge::~GlobalKnowledge();
+	}
     
     // Disallow copying and assignment
     GlobalKnowledge(const GlobalKnowledge&) = delete;
@@ -31,6 +35,7 @@ public:
 
 private:
     GlobalKnowledge() = default;  // Private constructor
+	~GlobalKnowledge();
 
     struct Mapping {
         std::string phrase;

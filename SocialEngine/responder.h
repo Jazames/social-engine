@@ -14,7 +14,10 @@ public:
     static Responder& get_instance() {
         static Responder instance; // Guaranteed to be lazy initialized and destroyed correctly
         return instance;
-    }
+	}
+	void deinit() {
+		Responder::~Responder();
+	}
 
     std::string get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info = "", bool use_llama = false);
 

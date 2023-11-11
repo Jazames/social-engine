@@ -13,6 +13,9 @@ public:
     }
 
     DialogueType get_classification(const std::string& dialogue);
+	void deinit() {
+		BertClassifier::~BertClassifier();
+	}
 
 private:
     BertClassifier();

@@ -550,10 +550,25 @@ std::string Responder::get_canned_response(const std::string& dialogue, Age matu
         "You're cruisin for a bruisin"
     };
 
+	std::vector<std::string> non_responses = {
+		"No responses found for this dialogue.",
+		"Sorry, I forgot that I'm not real."
+	};
+
     std::map<DialogueResponseDirection, std::vector<std::string>> responses = {
         { DialogueResponseDirection::Greet, greetings },
         { DialogueResponseDirection::Deride, insults },
-        { DialogueResponseDirection::Threaten,  threats }
+        { DialogueResponseDirection::Threaten,  threats },
+		{ DialogueResponseDirection::Ignore, non_responses },
+		{ DialogueResponseDirection::Wilt, non_responses },
+		{ DialogueResponseDirection::Accept, non_responses },
+		{ DialogueResponseDirection::Disagree, non_responses },
+		{ DialogueResponseDirection::Answer, non_responses },
+		{ DialogueResponseDirection::Lie, non_responses },
+		{ DialogueResponseDirection::Assist, non_responses },
+		{ DialogueResponseDirection::Decline, non_responses },
+		{ DialogueResponseDirection::Sabotage, non_responses },
+		{ DialogueResponseDirection::Thank, non_responses }
     };
 
     std::vector<std::string> r = responses[response_direction];
