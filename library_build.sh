@@ -1,41 +1,44 @@
 #!/bin/bash
 
 
-##Adjust the llama cmakelists file.
-#echo "Modifying llamaCpp CMakeLists"
-#
-#
-## Define the file path
-#FILE="llamaCpp/CMakeLists.txt"
-#
-## Check if the file exists
-#if [ ! -f "$FILE" ]; then
-#    echo "Error: File $FILE does not exist."
-#    exit 1
-#fi
-#
-## Create a temporary file
-#TEMP_FILE=$(mktemp)
-#
-## Use awk to edit the file
-#awk '
-#    /cmake_minimum_required\(/ {
-#        print
-#        print "cmake_policy(SET CMP0091 NEW)"
-#        next
-#    }
-#    /set\(CMAKE_C_STANDARD_REQUIRED true\)/ {
-#        print
-#        print "set(CMAKE_MSVC_RUNTIME_LIBRARY \"MultiThreaded\$<\$<CONFIG:Debug>:Debug>\")"
-#        next
-#    }
-#    { print }
-#' "$FILE" > "$TEMP_FILE"
-#
-## Replace original file with the modified one
-#mv "$TEMP_FILE" "$FILE"
-#
-#echo "Done modifying"
+#Adjust the llama cmakelists file.
+echo "Modifying llamaCpp CMakeLists"
+
+
+# Define the file path
+FILE="llamaCpp/CMakeLists.txt"
+
+# Check if the file exists
+if [ ! -f "$FILE" ]; then
+    echo "Error: File $FILE does not exist."
+    exit 1
+fi
+
+# Create a temporary file
+TEMP_FILE=$(mktemp)
+
+# Use awk to edit the file
+awk '
+    /cmake_minimum_required\(/ {
+        print
+        print "cmake_policy(SET CMP0091 NEW)"
+        next
+    }
+    /set\(CMAKE_C_STANDARD_REQUIRED true\)/ {
+        print
+        print "set(CMAKE_MSVC_RUNTIME_LIBRARY \"MultiThreaded\$<\$<CONFIG:Debug>:Debug>\")"
+        next
+    }
+    /CUDA::cublas_static CUDA::cublasLt_static/ {
+        gsub(/CUDA::cublas_static CUDA::cublasLt_static/, "CUDA::cublas CUDA::cublasLt")
+    }
+    { print }
+' "$FILE" > "$TEMP_FILE"
+
+# Replace original file with the modified one
+mv "$TEMP_FILE" "$FILE"
+
+echo "Done modifying"
 
 
 #build llama

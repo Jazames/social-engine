@@ -11,7 +11,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     //llama_context* ctx = context.get();
-    llama_kv_cache_tokens_rm(ctx, -1, -1);
+    llama_kv_cache_clear(ctx);
     llama_reset_timings(ctx);
 
     llama_sampling_params& sparams = params.sparams;
@@ -200,7 +200,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
         }
 
         // end of text token
-        if (!embd.empty() && embd.back() == llama_token_eos(ctx)) {
+        if (!embd.empty() && embd.back() == llama_token_eos(model)) {
             LOG_TEE(" [end of text]\n");
             break;
         }

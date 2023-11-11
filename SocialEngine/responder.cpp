@@ -28,7 +28,7 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     //llama_context* ctx = context.get();
-    llama_kv_cache_tokens_rm(ctx, -1, -1);
+    llama_kv_cache_clear(ctx);
     llama_reset_timings(ctx);
 
     llama_sampling_params& sparams = params.sparams;
@@ -191,7 +191,7 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
 
 
         // end of text token
-        if (!embd.empty() && embd.back() == llama_token_eos(ctx)) {
+        if (!embd.empty() && embd.back() == llama_token_eos(model)) {
             return response;
         }
     }
@@ -437,18 +437,18 @@ std::tuple<struct llama_model *, struct llama_context *> do_a_model_load(gpt_par
 	}
 
 	if (params.ignore_eos) {
-		params.sparams.logit_bias[llama_token_eos(lctx)] = -INFINITY;
+		params.sparams.logit_bias[llama_token_eos(model)] = -INFINITY;
 	}
 
 	{
 		LOG("warming up the model with an empty run\n");
 
 		std::vector<llama_token> tmp = {
-			llama_token_bos(lctx),
-			llama_token_eos(lctx),
+			llama_token_bos(model),
+			llama_token_eos(model),
 		};
 		llama_decode(lctx, llama_batch_get_one(tmp.data(), std::min(tmp.size(), (size_t)params.n_batch), 0, 0));
-		llama_kv_cache_tokens_rm(lctx, -1, -1);
+        llama_kv_cache_clear(lctx);
 		llama_reset_timings(lctx);
 	}
 
