@@ -8,6 +8,12 @@
 #include "dialogue.h"
 #include "global_knowledge.h"
 
+void init_social_engine()
+{
+	BertClassifier::get_instance();
+	GlobalKnowledge::get_instance();
+	Responder::get_instance();
+}
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
 {

@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <vector>
 #include <sstream>
+#include <iostream>
 #include <iomanip>
 
 
@@ -398,6 +399,63 @@ std::string Responder::build_sabotage_prompt(const std::string& dialogue, Age ma
 }
 
 
+
+std::tuple<struct llama_model *, struct llama_context *> do_a_model_load(gpt_params &params) {
+	auto mparams = llama_model_params_from_gpt_params(params);
+
+	llama_model *model = llama_load_model_from_file(params.model.c_str(), mparams);
+	if (model == NULL) {
+		fprintf(stderr, "%s: error: failed to load model '%s'\n", __func__, params.model.c_str());
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	auto cparams = llama_context_params_from_gpt_params(params);
+
+	llama_context *lctx = llama_new_context_with_model(model, cparams);
+	if (lctx == NULL) {
+		fprintf(stderr, "%s: error: failed to create context with model '%s'\n", __func__, params.model.c_str());
+		llama_free_model(model);
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	for (unsigned int i = 0; i < params.lora_adapter.size(); ++i) {
+		const std::string &lora_adapter = std::get<0>(params.lora_adapter[i]);
+		float lora_scale = std::get<1>(params.lora_adapter[i]);
+		int err = llama_model_apply_lora_from_file(model,
+				lora_adapter.c_str(),
+				lora_scale,
+				((i > 0) || params.lora_base.empty())
+						? NULL
+						: params.lora_base.c_str(),
+				params.n_threads);
+		if (err != 0) {
+			fprintf(stderr, "%s: error: failed to apply lora adapter\n", __func__);
+			llama_free(lctx);
+			llama_free_model(model);
+			return std::make_tuple(nullptr, nullptr);
+		}
+	}
+
+	if (params.ignore_eos) {
+		params.sparams.logit_bias[llama_token_eos(lctx)] = -INFINITY;
+	}
+
+	{
+		LOG("warming up the model with an empty run\n");
+
+		std::vector<llama_token> tmp = {
+			llama_token_bos(lctx),
+			llama_token_eos(lctx),
+		};
+		llama_decode(lctx, llama_batch_get_one(tmp.data(), std::min(tmp.size(), (size_t)params.n_batch), 0, 0));
+		llama_kv_cache_tokens_rm(lctx, -1, -1);
+		llama_reset_timings(lctx);
+	}
+
+	return std::make_tuple(model, lctx);
+}
+
+
 Responder::Responder() {
     // Initialization logic
     params.sparams.temp = 0.8f;
@@ -409,13 +467,13 @@ Responder::Responder() {
 
 
     
-    std::tie(model, ctx) = llama_init_from_gpt_params(params);
+    std::tie(model, ctx) = do_a_model_load(params);
     if (model == NULL) {
-        fprintf(stderr, "%s: error: unable to load model\n", __func__);
+		std::cout << "Error: unable to load model" << std::endl;
         exit(1);
     }
     if (ctx == NULL) {
-        fprintf(stderr, "%s: error: unable to load model\n", __func__);
+		std::cout << "Error: unable to load model context" << std::endl;
         exit(1);
     }
 }
