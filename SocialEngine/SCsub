@@ -38,7 +38,7 @@ SOCIAL_ENGINE_HEADERS = [
 # Combine sources and headers
 sources_and_headers = SOCIAL_ENGINE_SOURCES + SOCIAL_ENGINE_HEADERS
 
-env_soc_eng.add_source_files(env.modules_sources, SOCIAL_ENGINE_SOURCES)
+env_soc_eng.add_source_files(env.servers_sources, SOCIAL_ENGINE_SOURCES)
 
 env_soc_eng.Append(CPPPATH=['.'])
 env_soc_eng.Append(CPPPATH=["../llamaCpp"])
@@ -67,7 +67,7 @@ env.Append(LIBS=['llama', 'clip'])
 env_soc_eng.StaticLibrary(target='cudart', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64\\cudart.lib")
 env_soc_eng.StaticLibrary(target='cublas', source="C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64\\cublas.lib")
 #env.Append(LIBPATH=["C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.2\\lib\\x64"])
-env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\modules\\social_engine\\social-engine\\SocialEngine"]) #For cuda libs
+env.Append(LIBPATH=["C:\\Users\\James\\source\\repos\\godot\\servers\\social_engine\\social-engine\\SocialEngine"]) #For cuda libs
 env.Append(LIBS=['cudart', 'cublas'])
 
 

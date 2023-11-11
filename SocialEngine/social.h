@@ -4,6 +4,9 @@
 #include "Personality.h"
 #include "dialogue.h"
 
+
+void init_social_engine();
+
 DialogueType get_classification(std::string dialogue);
 
 std::string get_default_response(std::string);
