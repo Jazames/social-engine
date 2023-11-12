@@ -317,6 +317,7 @@ std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
 std::string get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, Knowledge knowledge, DialogueType dialogueType)
 {
+	std::cout << "Response direction is" << get_response_direction_name(direction) << std::endl;
     std::string supplemental_info = "";
     if (direction == DialogueResponseDirection::Answer)
     {
@@ -407,6 +408,7 @@ std::string get_npc_request_response(std::string dialogue, Appearance appearance
 std::string get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge)
 {
     DialogueType type = get_classification(dialogue);
+	std::cout << "Classification: " << get_dialogue_type_name(type) << std::endl;
     switch (type) 
     {
     case Greeting:

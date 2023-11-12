@@ -17,6 +17,26 @@ enum DialogueResponseDirection {
     Thank
 };
 
+inline std::string get_response_direction_name(DialogueResponseDirection direction)
+{
+	const std::string dialoge_response_direction_names[] = {
+		"Greet",
+		"Deride",
+		"Threaten",
+		"Ignore",
+		"Wilt",
+		"Accept",
+		"Disagree",
+		"Answer",
+		"Lie",
+		"Assist",
+		"Decline",
+		"Sabotage",
+		"Thank"
+	 };
+	return dialoge_response_direction_names[direction];
+}
+
 struct Disposition {
     double friendliness = 0; // 0 is neutral, negative is bad, positive is good.
 
