@@ -480,8 +480,15 @@ Responder::Responder() {
 
 Responder::~Responder() {
     // Deinitialization logic
-    llama_free(ctx);
-    llama_free_model(model);
+	if (ctx != nullptr)
+	{
+		llama_free(ctx);
+		ctx = nullptr;
+	}
+	if (model != nullptr) {
+		llama_free_model(model);
+		model = nullptr;
+	}
     llama_backend_free();
 }
 
