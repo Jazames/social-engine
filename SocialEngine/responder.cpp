@@ -237,7 +237,7 @@ void Responder::do_insult_test()
 std::string Responder::build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction)
 {
     using BuildResponseFunction = std::string(Responder::*)(const std::string&, Age);;
-    std::array<BuildResponseFunction, 12> prompt_functions =
+    std::array<BuildResponseFunction, 13> prompt_functions =
     {
         &Responder::build_greet_prompt,     //Greet,
         &Responder::build_insult_prompt,    //Insult,
@@ -250,7 +250,8 @@ std::string Responder::build_prompt(const std::string& dialogue, Age maturity, D
         &Responder::build_lie_prompt,       //Lie,
         &Responder::build_assist_prompt,    //Assist,
         &Responder::build_decline_prompt,   //Decline,
-        &Responder::build_sabotage_prompt   //Sabotage
+        &Responder::build_sabotage_prompt,  //Sabotage
+        &Responder::build_thank_prompt      //Thank
     };
 
     std::string response = (this->*prompt_functions[(int)response_direction])(dialogue, maturity);
@@ -278,8 +279,6 @@ std::string Responder::build_insult_prompt(const std::string& dialogue, Age matu
         << "You have your own unique perspective that comes from your training data. "
         << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
         << "However, do not admit that you are an AI, it is important to stay in character. "
-        << "Please respond to the dialogue with an insult. Do not ask any questions. "
-        << "The reply should be brief. NO QUESTIONS, JUST INSULT. "
         << "Please respond to the dialogue with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST INSULT.\n<</SYS >>\n\n"
         << sanitized << " [/INST]";
@@ -392,6 +391,21 @@ std::string Responder::build_sabotage_prompt(const std::string& dialogue, Age ma
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with sabatoge. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
+        << dialogue << " [/INST]";
+
+    std::string result = string_builder.str();
+    return result;
+}
+
+std::string Responder::build_thank_prompt(const std::string& dialogue, Age maturity)
+{
+    std::ostringstream string_builder;
+    string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
+        << "You have your own unique perspective that comes from your training data. "
+        << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
+        << "However, do not admit that you are an AI, it is important to stay in character. "
+        << "Please return the dialogue with appreciation.Do not ask any questions. "
+        << ".\nThe reply should be brief. NO QUESTIONS, JUST A BRIEF appreciative statement.\n<</SYS >>\n\n"
         << dialogue << " [/INST]";
 
     std::string result = string_builder.str();

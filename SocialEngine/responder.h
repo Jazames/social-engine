@@ -54,6 +54,7 @@ private:
     std::string build_assist_prompt(const std::string& dialogue, Age maturity);
     std::string build_decline_prompt(const std::string& dialogue, Age maturity);
     std::string build_sabotage_prompt(const std::string& dialogue, Age maturity);
+    std::string build_thank_prompt(const std::string& dialogue, Age maturity);
 
     Responder();
     ~Responder();

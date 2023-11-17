@@ -135,10 +135,84 @@ DialogueResponseDirection get_greeting_response_direction(Disposition dispositio
     }
 }
 
-
 DialogueResponseDirection get_compliment_response_direction(Disposition disposition, Personality personality)
 {
-    return Deride;
+    double shyness = 0.0;
+    shyness += 0.8 * personality.traits.Withdrawal;
+    shyness -= 0.2 * personality.traits.Assertiveness;
+    shyness -= 0.2 * personality.traits.Openness;
+    shyness -= 0.2 * personality.traits.Enthusiasm;
+
+    double maliciousness = 0.0;
+    maliciousness -= 0.5 * personality.morals.care_harm;
+    maliciousness -= 0.2 * personality.morals.loyalty_betrayal;
+    maliciousness -= 0.8 * personality.traits.Compassion;
+    maliciousness -= 0.2 * personality.traits.Politeness;
+
+    double manners = 0.0;
+    manners += 0.6 * personality.traits.Politeness;
+    manners += 0.2 * personality.traits.Orderliness;
+    manners += 0.2 * personality.morals.care_harm;
+    manners += 0.2 * personality.morals.loyalty_betrayal;
+
+    double unhinged = 0.0;
+    unhinged += 1.0 * personality.traits.Volatility;
+    unhinged -= 0.2 * personality.morals.sanctity_degradation;
+
+    double agency = 0.0;
+    agency += 0.6 * personality.traits.Assertiveness;
+    agency += 0.4 * personality.traits.Industriousness;
+    agency += 0.2 * personality.morals.liberty_oppression;
+    agency -= 0.2 * personality.traits.Politeness;
+    agency -= 0.2 * personality.morals.fairness_cheating;
+
+    if (shyness > 0)
+    {
+        if (maliciousness > 0)
+        {
+            if (unhinged > 0)
+            {
+				return Threaten;
+			}
+            else
+            {
+				return Deride;
+			}
+		}
+        else if (manners > 0.2)
+        {
+            return Thank;
+        }
+        else
+        {
+            if (agency > 0)
+            {
+                return Ignore;
+            }
+            else
+            {
+                return Wilt;
+            }
+		}
+	}
+    else
+    {
+        if (maliciousness > 0)
+        {
+            if (unhinged > 0)
+            {
+				return Threaten;
+			}
+            else
+            {
+				return Deride;
+			}
+		}
+        else
+        {
+            return Thank;
+		}
+    }
 }
 
 DialogueResponseDirection get_insult_response_direction(Disposition disposition, Personality personality)
@@ -404,6 +478,15 @@ std::string get_npc_request_response(std::string dialogue, Appearance appearance
     return response;
 }
 
+std::string get_npc_compliment_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
+	Disposition disposition = get_disposition(appearance, knowledge, personality);
+	DialogueResponseDirection direction = get_compliment_response_direction(disposition, personality);
+
+	knowledge = update_knowledge_from_interaction(knowledge, direction);
+	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Compliment);
+    return response;
+}
+
 
 std::string get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge)
 {
@@ -421,6 +504,8 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
         return get_npc_question_response(dialogue, appearance, personality, knowledge);
     case Statement:
         return get_npc_statement_response(dialogue, appearance, personality, knowledge);
+    case Compliment:
+        return get_npc_compliment_response(dialogue, appearance, personality, knowledge);
     default:
         std::cout << "Unknown classification." << std::endl;
         return "Wut?";

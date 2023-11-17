@@ -46,4 +46,23 @@ namespace slow
         auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
         ASSERT_GT(similarity, un_similarity);
     }
+
+    TEST(Response, test_compliment_gets_thank)
+    {
+        Personality p = get_default_personality();
+		Appearance a = get_default_appearance();
+		Knowledge k = get_default_knowledge();
+
+		//Default personality.
+
+		auto response = get_npc_response("I like your hat", a, p, k);
+		auto desired = "Thank you.";
+		auto undesired = "I'm busy";
+		std::cout << "Response: " << response << std::endl;
+		std::cout << "Desired: " << desired << std::endl;
+		std::cout << "Undesired: " << undesired << std::endl;
+		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
+		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
+		ASSERT_GT(similarity, un_similarity);
+    }
 }
