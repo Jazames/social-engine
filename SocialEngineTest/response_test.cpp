@@ -7,7 +7,6 @@
 
 namespace slow 
 {
-
     TEST(Response, test_default_greet_gets_greet) {
         Personality p = get_default_personality();
         Appearance a = get_default_appearance();
@@ -47,9 +46,8 @@ namespace slow
         ASSERT_GT(similarity, un_similarity);
     }
 
-    TEST(Response, test_compliment_gets_thank)
-    {
-        Personality p = get_default_personality();
+	TEST(Response, test_compliment_gets_thank) {
+		Personality p = get_default_personality();
 		Appearance a = get_default_appearance();
 		Knowledge k = get_default_knowledge();
 
@@ -64,5 +62,73 @@ namespace slow
 		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
 		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
 		ASSERT_GT(similarity, un_similarity);
-    }
+	}
+
+	TEST(Response, test_question_gets_accurate_answer_easy) {
+		Personality p = get_default_personality();
+		Appearance a = get_default_appearance();
+		Knowledge k = get_default_knowledge();
+
+		//Inquisitive personality.
+		p.morals.care_harm = 0.3;
+		p.traits.Openness = 0.5;
+		p.traits.Politeness = 0.4;
+		p.traits.Compassion = 0.2;
+
+		auto response = get_npc_response("Where can I go to pray?", a, p, k);
+		auto desired = " St. Elmo's Chapel.";
+		auto undesired = "See yah!";
+		std::cout << "Response: " << response << std::endl;
+		std::cout << "Desired: " << desired << std::endl;
+		std::cout << "Undesired: " << undesired << std::endl;
+		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
+		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
+		ASSERT_GT(similarity, un_similarity);
+	}
+
+	TEST(Response, test_question_gets_accurate_answer_medium) {
+		Personality p = get_default_personality();
+		Appearance a = get_default_appearance();
+		Knowledge k = get_default_knowledge();
+
+		//Inquisitive personality.
+		p.morals.care_harm = 0.3;
+		p.traits.Openness = 0.5;
+		p.traits.Politeness = 0.4;
+		p.traits.Compassion = 0.2;
+
+		auto response = get_npc_response("Where can I find a tincture to heal my headache?", a, p, k);
+		auto desired = "Bellamy's Apothecary.";
+		auto undesired = "See yah!";
+		std::cout << "Response: " << response << std::endl;
+		std::cout << "Desired: " << desired << std::endl;
+		std::cout << "Undesired: " << undesired << std::endl;
+		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
+		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
+		ASSERT_GT(similarity, un_similarity);
+	}
+
+	TEST(Response, test_question_gets_accurate_answer_hard) {
+		Personality p = get_default_personality();
+		Appearance a = get_default_appearance();
+		Knowledge k = get_default_knowledge();
+
+		//Inquisitive personality.
+		p.morals.care_harm = 0.3;
+		p.traits.Openness = 0.5;
+		p.traits.Politeness = 0.4;
+		p.traits.Compassion = 0.2;
+
+		auto response = get_npc_response("I need to go on a long journey, where's the best place to get a ride to somewhere far off?", a, p, k);
+		auto desired = "Take a steam train from Whitfield Station.";
+		auto undesired = "See yah!";
+		std::cout << "Response: " << response << std::endl;
+		std::cout << "Desired: " << desired << std::endl;
+		std::cout << "Undesired: " << undesired << std::endl;
+		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
+		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
+		ASSERT_GT(similarity, un_similarity);
+	}
+
+
 }

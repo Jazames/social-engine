@@ -8,6 +8,7 @@
 void init_social_engine();
 void deinit_social_engine();
 
+Knowledge& add_to_knowlege(std::string dialogue, Knowledge& knowledge);
 DialogueType get_classification(std::string dialogue);
 
 std::string get_default_response(std::string);

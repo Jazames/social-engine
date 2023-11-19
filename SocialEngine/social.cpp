@@ -404,18 +404,14 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
 
     return response;
 }
-/*
-// Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::string get_response(DialogueResponseDirection direction, std::string dialogue, Knowledge knowledge, DialogueType dialogueType)
+
+Knowledge& add_to_knowlege(std::string dialogue, Knowledge& knowledge)
 {
-    std::string response = "Fill me out so I'm worth something.";
-
-    // Stub: Placeholder logic. Actual logic to generate a response string goes here.
-    // E.g., if direction is "Greet", return "Hello, traveler!"
-
-    return response;
+	GlobalKnowledge& gk = GlobalKnowledge::get_instance();
+	int knowledge_id = gk.add_knowledge(dialogue);
+	knowledge.known_fact_ids.push_back(knowledge_id);
+	return knowledge;
 }
-*/
 
 DialogueType get_classification(std::string dialogue)
 {
@@ -508,7 +504,7 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
         return get_npc_compliment_response(dialogue, appearance, personality, knowledge);
     default:
         std::cout << "Unknown classification." << std::endl;
-        return "Wut?";
+        return "Wut? I can't understand you.";
     }
 }
 
