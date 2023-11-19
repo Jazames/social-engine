@@ -281,6 +281,7 @@ DialogueResponseDirection get_question_response_direction(Disposition dispositio
 {
     double desire_to_help = disposition.friendliness;
     desire_to_help += 0.3 * personality.traits.Politeness;
+	desire_to_help += 0.3 * personality.traits.Compassion;
     desire_to_help += 0.3 * personality.traits.Intellect;
     desire_to_help += 0.1 * personality.traits.Openness;
     desire_to_help += 0.1 * personality.traits.Enthusiasm;
@@ -380,7 +381,7 @@ std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 
     std::vector<std::string> known_facts = gk.get_closest_items(dialogue, knowledge.known_fact_ids, 20);
     int i = 0;
-    while (supplemental_info.size() < 512)
+    while (supplemental_info.size() < 512 && known_facts.size() > i)
     {
         supplemental_info += known_facts[i++] + "\n\n";
     }
@@ -513,6 +514,28 @@ std::string get_default_response(std::string dialogue)
     Appearance appearance = Appearance();
     Personality personality = Personality();
     Knowledge knowledge = Knowledge();
+
+	//Grumpy philosopher grandpa
+	personality.age = Age::Boomer;
+	personality.intelligence = 123;
+	personality.maturity = 0.6;
+	personality.traits.Enthusiasm = -0.2;
+	personality.traits.Assertiveness = 0.6;
+	personality.traits.Volatility = 0.1;
+	personality.traits.Withdrawal = 0.3;
+	personality.traits.Politeness = -0.4;
+	personality.traits.Compassion = 0.1;
+	personality.traits.Orderliness = 0.5;
+	personality.traits.Industriousness = 0.2;
+	personality.traits.Openness = 0.1;
+	personality.traits.Intellect = 0.6;
+	personality.morals.authority_subversion = 0.2;
+	personality.morals.fairness_cheating = 0.4;
+	personality.morals.care_harm = 0.1;
+	personality.morals.liberty_oppression = 0.5;
+	personality.morals.loyalty_betrayal = 0.6;
+	personality.morals.sanctity_degradation = 0.4;
+
 
     return get_npc_response(dialogue, appearance, personality, knowledge);
 	//return "I don't like your girlfriend.";
