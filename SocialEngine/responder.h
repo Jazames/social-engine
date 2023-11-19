@@ -41,20 +41,20 @@ private:
 
     const std::array<std::string, 7> maturities = { "old and wise guru", "curmudgeon", "mature middle-aged person", "normal person", "young adult", "teenager", "child" };
 
-    std::string build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction);
-    std::string build_greet_prompt(const std::string& dialogue, Age maturity);
-    std::string build_insult_prompt(const std::string& dialogue, Age maturity); //Synonym for insult
-    std::string build_fight_prompt(const std::string& dialogue, Age maturity);
-    std::string build_ignore_prompt(const std::string& dialogue, Age maturity);
-    std::string build_wilt_prompt(const std::string& dialogue, Age maturity);
-    std::string build_accept_prompt(const std::string& dialogue, Age maturity);
-    std::string build_disagree_prompt(const std::string& dialogue, Age maturity);
-    std::string build_answer_prompt(const std::string& dialogue, Age maturity);
-    std::string build_lie_prompt(const std::string& dialogue, Age maturity);
-    std::string build_assist_prompt(const std::string& dialogue, Age maturity);
-    std::string build_decline_prompt(const std::string& dialogue, Age maturity);
-    std::string build_sabotage_prompt(const std::string& dialogue, Age maturity);
-    std::string build_thank_prompt(const std::string& dialogue, Age maturity);
+    std::string build_prompt(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, std::string supplemental_info);
+	std::string build_greet_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_insult_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info); //Synonym for insult
+	std::string build_fight_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_ignore_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_wilt_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_accept_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_disagree_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_answer_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_lie_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_assist_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_decline_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_sabotage_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
+	std::string build_thank_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info);
 
     Responder();
     ~Responder();

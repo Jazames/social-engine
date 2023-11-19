@@ -77,7 +77,7 @@ namespace slow
 
 		auto response = get_npc_response("Where can I go to pray?", a, p, k);
 		auto desired = " St. Elmo's Chapel.";
-		auto undesired = "See yah!";
+		auto undesired = "I don't know, but I hope you can find some serentiy. There's probably a church nearby. God be with you!";
 		std::cout << "Response: " << response << std::endl;
 		std::cout << "Desired: " << desired << std::endl;
 		std::cout << "Undesired: " << undesired << std::endl;
@@ -98,11 +98,12 @@ namespace slow
 		p.traits.Compassion = 0.2;
 
 		auto response = get_npc_response("Where can I find a tincture to heal my headache?", a, p, k);
-		auto desired = "Bellamy's Apothecary.";
-		auto undesired = "See yah!";
+		auto desired = "The people at Bellamy's Apothecary should be able to take care of you. They've got all sorts of useful things there.";
+		auto undesired = "I don't know, but I hope you find something. Good luck!";
 		std::cout << "Response: " << response << std::endl;
 		std::cout << "Desired: " << desired << std::endl;
 		std::cout << "Undesired: " << undesired << std::endl;
+		
 		auto similarity = GlobalKnowledge::get_instance().get_similarity(response, desired);
 		auto un_similarity = GlobalKnowledge::get_instance().get_similarity(response, undesired);
 		ASSERT_GT(similarity, un_similarity);
@@ -119,9 +120,9 @@ namespace slow
 		p.traits.Politeness = 0.4;
 		p.traits.Compassion = 0.2;
 
-		auto response = get_npc_response("I need to go on a long journey, where's the best place to get a ride to somewhere far off?", a, p, k);
+		auto response = get_npc_response("I need to go on a long journey, where's the best place to get a ride outta here?", a, p, k);
 		auto desired = "Take a steam train from Whitfield Station.";
-		auto undesired = "See yah!";
+		auto undesired = "I don't know, but I hope you can get to where you're going. Good luck!";
 		std::cout << "Response: " << response << std::endl;
 		std::cout << "Desired: " << desired << std::endl;
 		std::cout << "Undesired: " << undesired << std::endl;

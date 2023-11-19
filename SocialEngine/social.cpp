@@ -450,7 +450,7 @@ std::string get_npc_statement_response(std::string dialogue, Appearance appearan
 
 std::string get_npc_question_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Question);
+    DialogueResponseDirection direction = get_question_response_direction(disposition, personality);
     
     //TODO: Might need something to get filtered knowledge?
 	knowledge = update_knowledge_from_interaction(knowledge, direction);
