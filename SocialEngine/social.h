@@ -11,8 +11,11 @@ void deinit_social_engine();
 Knowledge& add_to_knowlege(std::string dialogue, Knowledge& knowledge);
 DialogueType get_classification(std::string dialogue);
 
-std::string get_default_response(std::string);
-std::string get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge);
+std::shared_ptr<DialogueResponse> get_default_response(std::string);
+std::shared_ptr<DialogueResponse> get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge);
+
+std::string get_npc_response_synchronous(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge);
+std::string get_default_response_synchronous(std::string dialogue);
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality);
 

@@ -9,6 +9,9 @@
 #include "dialogue.h"
 #include "personality.h"
 
+
+
+
 class Responder {
 public:
     static Responder& get_instance() {
@@ -19,7 +22,8 @@ public:
 		Responder::~Responder();
 	}
 
-    std::string get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info = "", bool use_llama = false);
+	std::shared_ptr<DialogueResponse> get_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info = "", bool use_llama = false);
+	std::string get_response_synchronously(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info = "", bool use_llama = false);
 
     void do_greet_test();
     void do_insult_test();
@@ -29,8 +33,8 @@ private:
     gpt_params params;
     llama_context* ctx;
 
-    std::string get_llama_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info = "");
-    std::string get_canned_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info = "");
+    void get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info = "");
+	std::shared_ptr<DialogueResponse> get_canned_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info = "");
 
     const std::string model_file_path;
 

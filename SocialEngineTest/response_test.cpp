@@ -14,7 +14,7 @@ namespace slow
 
         //Default personality.
 
-        auto response = get_npc_response("Hello", a, p, k);
+        auto response = get_npc_response_synchronous("Hello", a, p, k);
         auto desired = "Hello.";
         auto undesired = "I'm busy";
         std::cout << "Response: " << response << std::endl;
@@ -35,7 +35,7 @@ namespace slow
         p.traits.Compassion = -1.0;
         p.traits.Politeness = -1.0;
 
-        auto response = get_npc_response("Hello", a, p, k);
+        auto response = get_npc_response_synchronous("Hello", a, p, k);
         auto desired = "Go away doofus, you're too blind to realize that you're wasting my time. Now begone.";
         auto undesired = "Hello, I like your hat";
         std::cout << "Response: " << response << std::endl;
@@ -53,7 +53,7 @@ namespace slow
 
 		//Default personality.
 
-		auto response = get_npc_response("I like your hat", a, p, k);
+		auto response = get_npc_response_synchronous("I like your hat", a, p, k);
 		auto desired = "Thank you.";
 		auto undesired = "I'm busy";
 		std::cout << "Response: " << response << std::endl;
@@ -75,7 +75,7 @@ namespace slow
 		p.traits.Politeness = 0.4;
 		p.traits.Compassion = 0.2;
 
-		auto response = get_npc_response("Where can I go to pray?", a, p, k);
+		auto response = get_npc_response_synchronous("Where can I go to pray?", a, p, k);
 		auto desired = " St. Elmo's Chapel.";
 		auto undesired = "I don't know, but I hope you can find some serentiy. There's probably a church nearby. God be with you!";
 		std::cout << "Response: " << response << std::endl;
@@ -97,7 +97,7 @@ namespace slow
 		p.traits.Politeness = 0.4;
 		p.traits.Compassion = 0.2;
 
-		auto response = get_npc_response("Where can I find a tincture to heal my headache?", a, p, k);
+		auto response = get_npc_response_synchronous("Where can I find a tincture to heal my headache?", a, p, k);
 		auto desired = "The people at Bellamy's Apothecary should be able to take care of you. They've got all sorts of useful things there.";
 		auto undesired = "I don't know, but I hope you find something. Good luck!";
 		std::cout << "Response: " << response << std::endl;
@@ -120,7 +120,7 @@ namespace slow
 		p.traits.Politeness = 0.4;
 		p.traits.Compassion = 0.2;
 
-		auto response = get_npc_response("I need to go on a long journey, where's the best place to get a ride outta here?", a, p, k);
+		auto response = get_npc_response_synchronous("I need to go on a long journey, where's the best place to get a ride outta here?", a, p, k);
 		auto desired = "Take a steam train from Whitfield Station.";
 		auto undesired = "I don't know, but I hope you can get to where you're going. Good luck!";
 		std::cout << "Response: " << response << std::endl;

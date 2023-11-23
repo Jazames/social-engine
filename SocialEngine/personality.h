@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include <mutex>
 
 struct Big5Traits
 {
@@ -107,6 +108,34 @@ struct Appearance
 };
 
 
+struct DialogueResponse {
+private:
+	mutable std::mutex mutex;
+	std::string response;
+	std::atomic<bool> is_complete = false;
+	//int id;
+public:
+	void set_response(std::string response) {
+		std::lock_guard<std::mutex> guard(mutex);
+		this->response = response;
+	}
+	void append_response(std::string response) {
+		std::lock_guard<std::mutex> guard(mutex);
+		this->response += response;
+	}
+	std::string get_response() {
+		std::lock_guard<std::mutex> guard(mutex);
+		return response;
+	}
+	bool get_is_complete() {
+		return is_complete;
+	}
+	void set_complete() {
+		is_complete = true;
+	}
+	DialogueResponse(std::string initial_response) :
+			response(initial_response) {}
+};
 
 //TODO: 
 /*

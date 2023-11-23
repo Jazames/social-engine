@@ -11,11 +11,13 @@
 
 
 
-std::string Responder::get_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info, bool use_llama)
-{
+std::shared_ptr<DialogueResponse> Responder::get_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info, bool use_llama) {
     if (use_llama)
     {
-        return get_llama_response(dialogue, maturity, response_direction, supplemental_info);
+		std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>("");
+		std::thread thread(&Responder::get_llama_response, this, dialogue, response, maturity, response_direction, supplemental_info);
+		thread.detach();
+        return response;
     }
     else
     {
@@ -23,8 +25,18 @@ std::string Responder::get_response(const std::string& dialogue, Age maturity, D
 	}
 }
 
-std::string Responder::get_llama_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
+
+std::string Responder::get_response_synchronously(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info, bool use_llama)
 {
+	std::shared_ptr<DialogueResponse> response = get_response(dialogue, maturity, response_direction, supplemental_info, use_llama);
+	while (!response->get_is_complete())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	return response->get_response();
+}
+
+void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     //llama_context* ctx = context.get();
@@ -67,13 +79,19 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
         prompty += llama_token_to_piece(ctx, i);
     }
 
-    std::string response;
+    //std::string response;
     int max_generated_tokens = 16;
     int generated_tokens = 0;
 
 
     while (generated_tokens < max_generated_tokens)
     {
+		if (ctx == NULL || model == NULL)
+		{
+			std::cout << "Error: Constructor called while running inference." << std::endl;
+			return;
+		}
+
         // predict
         if (!embd.empty()) {
             // Note: n_ctx - 4 here is to match the logic for commandline prompt handling via
@@ -126,7 +144,10 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
 
                 if (llama_decode(ctx, llama_batch_get_one(&embd[i], n_eval, n_past, 0))) {
                     LOG_TEE("%s : failed to eval\n", __func__);
-                    return response + "...";
+					response->append_response("...");
+					response->set_complete();
+					//return response + "...";
+                    return;
                 }
 
                 n_past += n_eval;
@@ -148,8 +169,9 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
             LOG("last: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, ctx_sampling->prev).c_str());
 
             embd.push_back(id);
-            const std::string token_str = llama_token_to_piece(ctx, id);
-            response += token_str;
+			const std::string token_str = llama_token_to_piece(ctx, id);
+			response->append_response(token_str);
+            //response += token_str;
 
             // echo this to console
             input_echo = true;
@@ -176,28 +198,38 @@ std::string Responder::get_llama_response(const std::string& dialogue, Age matur
             }
         }
 
-        if (response.find("I cannot fulfill") != std::string::npos)
+        if (response->get_response().find("I cannot fulfill") != std::string::npos)
         {
-            return "I'm done. (fulfill)";
+			response->set_response("I'm done. (fulfill)");
+			response->set_complete();
+			return;
+            //return "I'm done. (fulfill)";
         }
-        if (response.find("I can't satisfy") != std::string::npos)
-        {
-            return "I'm done. (satisfy)";
+		if (response->get_response().find("I can't satisfy") != std::string::npos) {
+			response->set_response("I'm done. (satisfy)");
+			response->set_complete();
+			return;
+            //return "I'm done. (satisfy)";
         }
-        if (response.find("AI") != std::string::npos)
-        {
-            return "I'm done. (AI)";
+		if (response->get_response().find("AI") != std::string::npos) {
+			response->set_response("I'm done. (AI)");
+			response->set_complete();
+			return;
+            //return "I'm done. (AI)";
         }
 
 
         // end of text token
         if (!embd.empty() && embd.back() == llama_token_eos(model)) {
-            return response;
+			response->set_complete();
+			return;
+            //return response;
         }
     }
-
-    // ... (use the provided code for processing the dialogue but replace initialization and deinitialization parts)
-    return response + "..."; // This should be replaced with your actual logic
+	
+	response->append_response("...");
+	response->set_complete();
+    //return response + "...";
 }
 
 void Responder::do_greet_test()
@@ -211,7 +243,8 @@ void Responder::do_greet_test()
         for (auto d : dialogues)
         {
             std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
-            std::cout << "Response: " << get_response(d, m, Greet) << std::endl << std::endl;
+			std::cout << "Response: " << get_response_synchronously(d, m, Greet, "", true) << std::endl
+					  << std::endl;
         }
     }
 }
@@ -229,7 +262,8 @@ void Responder::do_insult_test()
         for (auto d : dialogues)
         {
             std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
-            std::cout << "Response: " << get_response(d, m, Deride) << std::endl << std::endl;
+			std::cout << "Response: " << get_response_synchronously(d, m, Deride, "", true) << std::endl
+					  << std::endl;
         }
     }
 }
@@ -297,7 +331,7 @@ std::string Responder::build_fight_prompt(const std::string &dialogue, Age matur
 
 std::string Responder::build_ignore_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
     std::ostringstream string_builder;
-    string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
+    string_builder << " <s>[INST] <<SYS>>\nPlease briefly dismiss whatever. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
         << dialogue << " [/INST]";
 
@@ -499,8 +533,7 @@ Responder::~Responder() {
 }
 
 
-std::string Responder::get_canned_response(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info)
-{
+std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
     std::vector<std::string> greetings = {
         "Hello!",
         "Hi there!",
@@ -563,6 +596,10 @@ std::string Responder::get_canned_response(const std::string& dialogue, Age matu
         "You're cruisin for a bruisin"
     };
 
+	std::vector<std::string> answers = {
+		"Well, I know this much: " + supplemental_info
+	};
+
 	std::vector<std::string> non_responses = {
 		"No responses found for this dialogue.",
 		"Sorry, I forgot that I'm not real."
@@ -576,7 +613,7 @@ std::string Responder::get_canned_response(const std::string& dialogue, Age matu
 		{ DialogueResponseDirection::Wilt, non_responses },
 		{ DialogueResponseDirection::Accept, non_responses },
 		{ DialogueResponseDirection::Disagree, non_responses },
-		{ DialogueResponseDirection::Answer, non_responses },
+		{ DialogueResponseDirection::Answer, answers },
 		{ DialogueResponseDirection::Lie, non_responses },
 		{ DialogueResponseDirection::Assist, non_responses },
 		{ DialogueResponseDirection::Decline, non_responses },
@@ -586,5 +623,7 @@ std::string Responder::get_canned_response(const std::string& dialogue, Age matu
 
     std::vector<std::string> r = responses[response_direction];
     int index = rand() % r.size();
-    return r[index];
+	std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>(r[index]);
+	response->set_complete();
+	return response;
 }

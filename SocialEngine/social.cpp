@@ -390,7 +390,7 @@ std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 }
 
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::string get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, Knowledge knowledge, DialogueType dialogueType)
+std::shared_ptr<DialogueResponse> get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, Knowledge knowledge, DialogueType dialogueType)
 {
 	std::cout << "Response direction is" << get_response_direction_name(direction) << std::endl;
     std::string supplemental_info = "";
@@ -399,8 +399,8 @@ std::string get_response(DialogueResponseDirection direction, std::string dialog
         supplemental_info = get_relevant_knowledge(dialogue, knowledge);
     }
 
-    //TODO: incorporate direction and get Age/Enthusiasm
-    std::string response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info, true);
+    //TODO: responses should be as though they're coming from the personality type.
+	std::shared_ptr<DialogueResponse> response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info, true);
 	//std::string response = "Go hand me a beer.";
 
     return response;
@@ -419,76 +419,39 @@ DialogueType get_classification(std::string dialogue)
     return BertClassifier::get_instance().get_classification(dialogue);
 }
 
-std::string get_npc_greeting_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_greeting_response_direction(disposition, personality);
-    knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Greeting);
-    
-    //TODO: update actions/figure out if leave conversation
-    return response;
+DialogueResponseDirection get_response_direction(Disposition disposition, Personality personality, DialogueType dialogue_type) {
+	switch (dialogue_type) {
+		case Greeting:
+			return get_greeting_response_direction(disposition, personality);
+		case Insult:
+			return get_insult_response_direction(disposition, personality);
+		case Request:
+			return get_request_response_direction(disposition, personality);
+		case Question:
+			return get_question_response_direction(disposition, personality);
+		case Statement:
+			return get_statement_response_direction(disposition, personality);
+		case Compliment:
+			return get_compliment_response_direction(disposition, personality);
+		default:
+			std::cout << "Unknown classification." << std::endl;
+			return Ignore;
+	}
 }
 
-std::string get_npc_insult_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_insult_response_direction(disposition, personality);
-    knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Insult);
-
-    //TODO: update actions/figure out if leave conversation
-    return response;
-}
-
-std::string get_npc_statement_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Statement);
-    knowledge = update_knowledge_from_interaction(knowledge, direction);
-    std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Statement);
-
-    //TODO: update actions/figure out if leave conversation
-    return response;
-}
-
-std::string get_npc_question_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    Disposition disposition = get_disposition(appearance, knowledge, personality);
-    DialogueResponseDirection direction = get_question_response_direction(disposition, personality);
-    
-    //TODO: Might need something to get filtered knowledge?
-	knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Question);
-
-    //TODO: update actions/figure out if leave conversation
-    return response;
-}
-
-std::string get_npc_request_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    Disposition disposition = get_disposition(appearance, knowledge, personality);
-    //TODO: Figure out how to Get Check knowledge to determine what's required for the request, whether that aligns with goals, etc.
-
-    DialogueResponseDirection direction = get_dialogue_response_direction(disposition, personality, DialogueType::Request);
-
-    //TODO: Might need something to get filtered knowledge?
-	knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Request);
-
-    //TODO: update actions/figure out if leave conversation
-    return response;
-}
-
-std::string get_npc_compliment_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-	Disposition disposition = get_disposition(appearance, knowledge, personality);
-	DialogueResponseDirection direction = get_compliment_response_direction(disposition, personality);
-
-	knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::string response = get_response(direction, dialogue, personality.age, knowledge, DialogueType::Compliment);
-    return response;
-}
-
-
-std::string get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge)
-{
+std::shared_ptr<DialogueResponse> get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
     DialogueType type = get_classification(dialogue);
 	std::cout << "Classification: " << get_dialogue_type_name(type) << std::endl;
+
+	Disposition disposition = get_disposition(appearance, knowledge, personality);
+	DialogueResponseDirection direction = get_response_direction(disposition, personality, type);
+	knowledge = update_knowledge_from_interaction(knowledge, direction);
+	std::shared_ptr<DialogueResponse> response = get_response(direction, dialogue, personality.age, knowledge, type);
+
+	//TODO: update actions/figure out if leave conversation
+	return response;
+
+	/*
     switch (type) 
     {
     case Greeting:
@@ -507,10 +470,10 @@ std::string get_npc_response(std::string dialogue, Appearance appearance, Person
         std::cout << "Unknown classification." << std::endl;
         return "Wut? I can't understand you.";
     }
+	*/
 }
 
-std::string get_default_response(std::string dialogue)
-{
+std::shared_ptr<DialogueResponse> get_default_response(std::string dialogue) {
     Appearance appearance = Appearance();
     Personality personality = Personality();
     Knowledge knowledge = Knowledge();
@@ -541,7 +504,25 @@ std::string get_default_response(std::string dialogue)
 	//return "I don't like your girlfriend.";
 }
 
+std::string get_default_response_synchronous(std::string dialogue)
+{
+	std::shared_ptr<DialogueResponse> response = get_default_response(dialogue);
+	while (!response->get_is_complete())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	return response->get_response();
+}
 
+std::string get_npc_response_synchronous(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge)
+{
+	std::shared_ptr<DialogueResponse> response = get_npc_response(dialogue, appearance, personality, knowledge);
+	while (!response->get_is_complete())
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+	return response->get_response();
+}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu

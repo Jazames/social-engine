@@ -35,7 +35,7 @@ int main()
     std::string dialogue = "Hello fine kitty.";// "Are you a whore?";
     Embedder::get_instance().get_embedding(dialogue);
     auto classification = BertClassifier::get_instance().get_classification(dialogue);
-    std::string response = Responder::get_instance().get_response(dialogue, Young, Greet);
+    std::string response = Responder::get_instance().get_response_synchronously(dialogue, Young, Greet);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;
@@ -48,7 +48,7 @@ int main()
     Personality npc_personality = Personality();
     Knowledge knowledge = Knowledge();
     npc_personality.maturity = 0.3;
-    response = get_npc_response(player_words, player_appearance, npc_personality, knowledge);
+	response = get_npc_response_synchronous(player_words, player_appearance, npc_personality, knowledge);
 
     std::cout << "NPC response: " << response << std::endl;
 
