@@ -33,9 +33,11 @@ int main()
 {
     std::cout << "Warming up." << std::endl;
     std::string dialogue = "Hello fine kitty.";// "Are you a whore?";
+	Personality personality;
+	personality.personality_override = "a child who loves all cute things ";
     Embedder::get_instance().get_embedding(dialogue);
     auto classification = BertClassifier::get_instance().get_classification(dialogue);
-    std::string response = Responder::get_instance().get_response_synchronously(dialogue, Young, Greet);
+    std::string response = Responder::get_instance().get_response_synchronously(dialogue, Greet, personality);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;

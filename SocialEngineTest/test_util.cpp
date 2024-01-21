@@ -18,8 +18,6 @@ Personality get_default_personality()
 	personality.morals.loyalty_betrayal = 0.25;
 	personality.morals.liberty_oppression = 0.25;
 
-	personality.age = Age::Adult;
-
 	return personality;
 }
 
