@@ -390,8 +390,7 @@ std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 }
 
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::shared_ptr<DialogueResponse> get_response(DialogueResponseDirection direction, std::string dialogue, Age maturity, Knowledge knowledge, DialogueType dialogueType)
-{
+std::shared_ptr<DialogueResponse> get_response(std::string dialogue, DialogueResponseDirection direction, Personality personality, Knowledge knowledge, DialogueType dialogueType) {
 	std::cout << "Response direction is" << get_response_direction_name(direction) << std::endl;
     std::string supplemental_info = "";
     if (direction == DialogueResponseDirection::Answer)
@@ -400,7 +399,7 @@ std::shared_ptr<DialogueResponse> get_response(DialogueResponseDirection directi
     }
 
     //TODO: responses should be as though they're coming from the personality type.
-	std::shared_ptr<DialogueResponse> response = Responder::get_instance().get_response(dialogue, maturity, direction, supplemental_info, true);
+	std::shared_ptr<DialogueResponse> response = Responder::get_instance().get_response(dialogue, direction, personality, supplemental_info, true);
 	//std::string response = "Go hand me a beer.";
 
     return response;
@@ -446,7 +445,7 @@ std::shared_ptr<DialogueResponse> get_npc_response(std::string dialogue, Appeara
 	Disposition disposition = get_disposition(appearance, knowledge, personality);
 	DialogueResponseDirection direction = get_response_direction(disposition, personality, type);
 	knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::shared_ptr<DialogueResponse> response = get_response(direction, dialogue, personality.age, knowledge, type);
+	std::shared_ptr<DialogueResponse> response = get_response(dialogue, direction, personality, knowledge, type);
 
 	//TODO: update actions/figure out if leave conversation
 	return response;
@@ -479,7 +478,6 @@ std::shared_ptr<DialogueResponse> get_default_response(std::string dialogue) {
     Knowledge knowledge = Knowledge();
 
 	//Grumpy philosopher grandpa
-	personality.age = Age::Boomer;
 	personality.intelligence = 123;
 	personality.maturity = 0.6;
 	personality.traits.Enthusiasm = -0.2;

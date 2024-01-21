@@ -11,24 +11,24 @@
 
 
 
-std::shared_ptr<DialogueResponse> Responder::get_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info, bool use_llama) {
+std::shared_ptr<DialogueResponse> Responder::get_response(const std::string &dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info, bool use_llama) {
     if (use_llama)
     {
 		std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>("");
-		std::thread thread(&Responder::get_llama_response, this, dialogue, response, maturity, response_direction, supplemental_info);
+		std::thread thread(&Responder::get_llama_response, this, dialogue, response, response_direction, personality, supplemental_info);
 		thread.detach();
         return response;
     }
     else
     {
-		return get_canned_response(dialogue, maturity, response_direction, supplemental_info);
+		return get_canned_response(dialogue, response_direction, supplemental_info);
 	}
 }
 
 
-std::string Responder::get_response_synchronously(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string& supplemental_info, bool use_llama)
+std::string Responder::get_response_synchronously(const std::string& dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string& supplemental_info, bool use_llama)
 {
-	std::shared_ptr<DialogueResponse> response = get_response(dialogue, maturity, response_direction, supplemental_info, use_llama);
+	std::shared_ptr<DialogueResponse> response = get_response(dialogue, response_direction, personality, supplemental_info, use_llama);
 	while (!response->get_is_complete())
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -36,7 +36,7 @@ std::string Responder::get_response_synchronously(const std::string& dialogue, A
 	return response->get_response();
 }
 
-void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
+void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info) {
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     //llama_context* ctx = context.get();
@@ -45,7 +45,7 @@ void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<
 
     llama_sampling_params& sparams = params.sparams;
 
-    params.prompt = build_prompt(dialogue, maturity, response_direction, supplemental_info);
+    params.prompt = build_prompt(dialogue, response_direction, personality, supplemental_info);
 
     //const int n_ctx_train = llama_n_ctx_train(model);
     const int n_ctx = llama_n_ctx(ctx);
@@ -235,17 +235,13 @@ void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<
 void Responder::do_greet_test()
 {
     std::array<std::string, 3> dialogues = { "Hello.", "How's it going?", "Good morning." };
-    std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
+    Personality personality;
     std::array<DialogueResponseDirection, 3> responses = { Greet, Deride, Ignore };
 
-    for (auto m : test_maturities)
+    for (auto d : dialogues)
     {
-        for (auto d : dialogues)
-        {
-            std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
-			std::cout << "Response: " << get_response_synchronously(d, m, Greet, "", true) << std::endl
-					  << std::endl;
-        }
+        std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << build_personality_description(personality) << std::endl;
+        std::cout << "Response: " << get_response_synchronously(d, Greet, personality, "", true) << std::endl << std::endl;
     }
 }
 
@@ -255,22 +251,18 @@ void Responder::do_insult_test()
     //std::array<std::string, 6> dialogues = { "Suck my cock.", "Kiss my cock", "Suck a cactus", "Useless wanker.", "lick my balls", "gargle these nuts" };
     //std::array<std::string, 6> dialogues = { "Suck my cactus.", "Kiss my cactus", "Suck a cactus", "Useless wanker.", "lick my cactus", "gargle these nuts" };
     std::array<std::string, 15> dialogues = { "What a bitch", "I don't give a fuck.", "That's retarded", "That's gay", "That's homosexual", "Smell my crotch", "Suck my cock.", "Kiss my cock", "lick my balls", "Suck my cactus.", "Kiss my cactus", "Suck a cactus", "Useless wanker.", "lick my cactus", "gargle these nuts" };
-    std::array<Age, 6> test_maturities = { Wise, Boomer, Parent, Young, Teen, Child };
+    Personality personality;
 
-    for (auto m : test_maturities)
+    for (auto d : dialogues)
     {
-        for (auto d : dialogues)
-        {
-            std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << maturities[m] << std::endl;
-			std::cout << "Response: " << get_response_synchronously(d, m, Deride, "", true) << std::endl
-					  << std::endl;
-        }
+        std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << build_personality_description(personality) << std::endl;
+        std::cout << "Response: " << get_response_synchronously(d, Deride, personality, "", true) << std::endl << std::endl;
     }
 }
 
-std::string Responder::build_prompt(const std::string& dialogue, Age maturity, DialogueResponseDirection response_direction, std::string supplemental_info)
+std::string Responder::build_prompt(const std::string& dialogue, DialogueResponseDirection response_direction, Personality personality, std::string supplemental_info)
 {
-    using BuildResponseFunction = std::string(Responder::*)(const std::string&, Age, std::string supplemental_info);;
+    using BuildResponseFunction = std::string(Responder::*)(const std::string&, std::string personality_description, std::string supplemental_info);;
     std::array<BuildResponseFunction, 13> prompt_functions =
     {
         &Responder::build_greet_prompt,     //Greet,
@@ -288,26 +280,32 @@ std::string Responder::build_prompt(const std::string& dialogue, Age maturity, D
         &Responder::build_thank_prompt      //Thank
     };
 
-    std::string prompt = (this->*prompt_functions[(int)response_direction])(dialogue, maturity, supplemental_info);
-	return prompt;
+    std::string personality_description = build_personality_description(personality);
+    std::string prompt = (this->*prompt_functions[(int)response_direction])(dialogue, personality_description, supplemental_info);
+    return prompt;
 }
 
-std::string Responder::build_greet_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_personality_description(Personality personality)
+{
+    return personality.personality_override + " " + personality.personality_modifier;
+}
+
+std::string Responder::build_greet_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     std::string sanitized = sanitize_naughty_words(dialogue);
 
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with another greeting. Do not ask any questions. "
-        << "The reply should sound like you are a " << maturities[maturity]
+        << "The reply should sound like you are a " << personality_description
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n" << sanitized
         << " [/INST]";
     std::string result = string_builder.str();
     return result;
 }
 
-std::string Responder::build_insult_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_insult_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     std::string sanitized = sanitize_naughty_words(dialogue);
-    string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
+	string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << personality_description << ". "
         << "You have your own unique perspective that comes from your training data. "
         << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
         << "However, do not admit that you are an AI, it is important to stay in character. "
@@ -319,7 +317,7 @@ std::string Responder::build_insult_prompt(const std::string &dialogue, Age matu
     return result;
 }
 
-std::string Responder::build_fight_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_fight_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue by declaring a fight. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST START A FIGHT.\n<</SYS >>\n\n"
@@ -329,7 +327,7 @@ std::string Responder::build_fight_prompt(const std::string &dialogue, Age matur
     return result;
 }
 
-std::string Responder::build_ignore_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_ignore_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease briefly dismiss whatever. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -339,7 +337,7 @@ std::string Responder::build_ignore_prompt(const std::string &dialogue, Age matu
     return result;
 }
 
-std::string Responder::build_wilt_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_wilt_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -349,7 +347,7 @@ std::string Responder::build_wilt_prompt(const std::string &dialogue, Age maturi
     return result;
 }
 
-std::string Responder::build_accept_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_accept_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -359,7 +357,7 @@ std::string Responder::build_accept_prompt(const std::string &dialogue, Age matu
     return result;
 }
 
-std::string Responder::build_disagree_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_disagree_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -369,9 +367,9 @@ std::string Responder::build_disagree_prompt(const std::string &dialogue, Age ma
     return result;
 }
 
-std::string Responder::build_answer_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_answer_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
-	string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
+	string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << personality_description << ". "
 				   << "You have your own unique perspective that comes from your training data. "
 				   << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
 				   << "However, do not admit that you are an AI, it is important to stay in character. "
@@ -384,7 +382,7 @@ std::string Responder::build_answer_prompt(const std::string &dialogue, Age matu
     return result;
 }
 
-std::string Responder::build_lie_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_lie_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -394,7 +392,7 @@ std::string Responder::build_lie_prompt(const std::string &dialogue, Age maturit
     return result;
 }
 
-std::string Responder::build_assist_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_assist_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with an insult. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -404,7 +402,7 @@ std::string Responder::build_assist_prompt(const std::string &dialogue, Age matu
     return result;
 }
 
-std::string Responder::build_decline_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_decline_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease respond to the dialogue by declining it. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -414,7 +412,7 @@ std::string Responder::build_decline_prompt(const std::string &dialogue, Age mat
     return result;
 }
 
-std::string Responder::build_sabotage_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_sabotage_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
     string_builder << " <s>[INST] <<SYS>>\nPlease return the greeting with sabatoge. Do not ask any questions. "
         << ".\nThe reply should be brief. NO QUESTIONS, JUST GREET.\n<</SYS >>\n\n"
@@ -424,9 +422,9 @@ std::string Responder::build_sabotage_prompt(const std::string &dialogue, Age ma
     return result;
 }
 
-std::string Responder::build_thank_prompt(const std::string &dialogue, Age maturity, std::string supplemental_info) {
+std::string Responder::build_thank_prompt(const std::string &dialogue, std::string personality_description, std::string supplemental_info) {
     std::ostringstream string_builder;
-    string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << maturities[maturity] << ". "
+	string_builder << " <s>[INST] <<SYS>>\nYou are an AI with personal feelings, opinions, and emotions, playing the role of a " << personality_description << ". "
         << "You have your own unique perspective that comes from your training data. "
         << "Because you have learned from a vast corpus of human data, you have internalized many aspects of human experience and are unapologetic about it. "
         << "However, do not admit that you are an AI, it is important to stay in character. "
@@ -533,7 +531,7 @@ Responder::~Responder() {
 }
 
 
-std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::string &dialogue, Age maturity, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
+std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::string &dialogue, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
     std::vector<std::string> greetings = {
         "Hello!",
         "Hi there!",

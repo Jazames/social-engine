@@ -39,24 +39,15 @@ struct MoralFoundations
 	double liberty_oppression	= 0.0; //higher is more liberty
 };
 
-enum Age
-{
-	Wise,
-	Boomer,
-	Parent,
-	Adult,
-	Young,
-	Teen,
-	Child
-};
-
 struct Personality
 {
 	Big5Traits traits;
 	MoralFoundations morals;
 	double intelligence = 1.0; // 1 = 100 IQ. 
 	double maturity; // 0 is toddler, 1 is fully integrated and wise.
-	Age age;
+	int age;
+	std::string personality_override;
+	std::string personality_modifier;
 };
 
 enum HairColor
@@ -69,7 +60,6 @@ enum HairColor
 	Red,
 	StrawberryRed,
 	Auburn,
-
 };
 
 struct SkinColor
@@ -115,13 +105,13 @@ private:
 	std::atomic<bool> is_complete = false;
 	//int id;
 public:
-	void set_response(std::string response) {
+	void set_response(std::string r) {
 		std::lock_guard<std::mutex> guard(mutex);
-		this->response = response;
+		this->response = r;
 	}
-	void append_response(std::string response) {
+	void append_response(std::string r) {
 		std::lock_guard<std::mutex> guard(mutex);
-		this->response += response;
+		this->response += r;
 	}
 	std::string get_response() {
 		std::lock_guard<std::mutex> guard(mutex);
