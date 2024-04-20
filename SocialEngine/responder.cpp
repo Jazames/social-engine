@@ -16,7 +16,7 @@ std::shared_ptr<DialogueResponse> Responder::get_response(InteractionParameters 
     if (parameters.use_llama)
     {
 		std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>("", parameters.classification, parameters.response_direction);
-		std::thread thread(&Responder::get_llama_response, this, parameters.dialogue, response, parameters.response_direction, parameters.personality, parameters.supplemental_info);
+		std::thread thread(&Responder::get_llama_response, this, parameters, response);
 		thread.detach();
         return response;
     }

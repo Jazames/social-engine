@@ -32,6 +32,7 @@ SOCIAL_ENGINE_HEADERS = [
     'bert_embed.h',
     'personality.h',
     'dialogue.h',
+    'interaction.h',
     'global_knowledge.h',
 ]
 
