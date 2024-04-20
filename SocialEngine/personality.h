@@ -2,6 +2,8 @@
 
 #include<vector>
 #include <mutex>
+#include "classifier.h"
+#include "dialogue.h"
 
 struct Big5Traits
 {
@@ -103,6 +105,8 @@ private:
 	mutable std::mutex mutex;
 	std::string response;
 	std::atomic<bool> is_complete = false;
+	DialogueType classification;
+	DialogueResponseDirection response_direction;
 	//int id;
 public:
 	void set_response(std::string r) {
@@ -123,8 +127,17 @@ public:
 	void set_complete() {
 		is_complete = true;
 	}
-	DialogueResponse(std::string initial_response) :
-			response(initial_response) {}
+	DialogueType get_classification() {
+		return classification;
+	}
+	DialogueResponseDirection get_response_direction() {
+		return response_direction;
+	}
+	DialogueResponse(std::string initial_response, DialogueType dialog_classification, DialogueResponseDirection dialogue_response_direction) :
+		response(initial_response),
+		classification(dialog_classification),
+		response_direction(dialogue_response_direction) {}
+			
 };
 
 //TODO: 

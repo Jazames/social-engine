@@ -390,16 +390,16 @@ std::string get_relevant_knowledge(std::string dialogue, Knowledge knowledge)
 }
 
 // Get a string response based on dialogue direction, original dialogue, and dialogue type
-std::shared_ptr<DialogueResponse> get_response(std::string dialogue, DialogueResponseDirection direction, Personality personality, Knowledge knowledge, DialogueType dialogueType) {
-	std::cout << "Response direction is" << get_response_direction_name(direction) << std::endl;
+std::shared_ptr<DialogueResponse> get_response(InteractionParameters parameters) {
+	std::cout << "Response direction is" << get_response_direction_name(parameters.response_direction) << std::endl;
     std::string supplemental_info = "";
-    if (direction == DialogueResponseDirection::Answer)
+	if (parameters.response_direction == DialogueResponseDirection::Answer)
     {
-        supplemental_info = get_relevant_knowledge(dialogue, knowledge);
+		supplemental_info = get_relevant_knowledge(parameters.dialogue, parameters.knowledge);
     }
 
     //TODO: responses should be as though they're coming from the personality type.
-	std::shared_ptr<DialogueResponse> response = Responder::get_instance().get_response(dialogue, direction, personality, supplemental_info, true);
+	std::shared_ptr<DialogueResponse> response = Responder::get_instance().get_response(parameters);
 	//std::string response = "Go hand me a beer.";
 
     return response;
@@ -438,14 +438,14 @@ DialogueResponseDirection get_response_direction(Disposition disposition, Person
 	}
 }
 
-std::shared_ptr<DialogueResponse> get_npc_response(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge) {
-    DialogueType type = get_classification(dialogue);
-	std::cout << "Classification: " << get_dialogue_type_name(type) << std::endl;
+std::shared_ptr<DialogueResponse> get_npc_response(InteractionParameters parameters) {
+	parameters.classification = get_classification(parameters.dialogue);
+	std::cout << "Classification: " << get_dialogue_type_name(parameters.classification) << std::endl;
 
-	Disposition disposition = get_disposition(appearance, knowledge, personality);
-	DialogueResponseDirection direction = get_response_direction(disposition, personality, type);
-	knowledge = update_knowledge_from_interaction(knowledge, direction);
-	std::shared_ptr<DialogueResponse> response = get_response(dialogue, direction, personality, knowledge, type);
+	Disposition disposition = get_disposition(parameters.appearance, parameters.knowledge, parameters.personality);
+	parameters.response_direction = get_response_direction(disposition, parameters.personality, parameters.classification);
+	parameters.knowledge = update_knowledge_from_interaction(parameters.knowledge, parameters.response_direction);
+	std::shared_ptr<DialogueResponse> response = get_response(parameters);
 
 	//TODO: update actions/figure out if leave conversation
 	return response;
@@ -497,8 +497,12 @@ std::shared_ptr<DialogueResponse> get_default_response(std::string dialogue) {
 	personality.morals.loyalty_betrayal = 0.6;
 	personality.morals.sanctity_degradation = 0.4;
 
-
-    return get_npc_response(dialogue, appearance, personality, knowledge);
+	InteractionParameters parameters = InteractionParameters();
+	parameters.dialogue = dialogue;
+	parameters.appearance = appearance;
+	parameters.personality = personality;
+	parameters.knowledge = knowledge;
+    return get_npc_response(parameters);
 	//return "I don't like your girlfriend.";
 }
 
@@ -512,9 +516,9 @@ std::string get_default_response_synchronous(std::string dialogue)
 	return response->get_response();
 }
 
-std::string get_npc_response_synchronous(std::string dialogue, Appearance appearance, Personality personality, Knowledge knowledge)
+std::string get_npc_response_synchronous(InteractionParameters parameters)
 {
-	std::shared_ptr<DialogueResponse> response = get_npc_response(dialogue, appearance, personality, knowledge);
+	std::shared_ptr<DialogueResponse> response = get_npc_response(parameters);
 	while (!response->get_is_complete())
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));

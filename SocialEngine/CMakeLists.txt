@@ -26,6 +26,7 @@ Set(SOCIAL_ENGINE_HEADERS
     personality.h
     dialogue.h
     global_knowledge.h
+    interaction.h
 )
 
 

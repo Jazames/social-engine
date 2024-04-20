@@ -11,32 +11,40 @@
 
 
 
-std::shared_ptr<DialogueResponse> Responder::get_response(const std::string &dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info, bool use_llama) {
-    if (use_llama)
+std::shared_ptr<DialogueResponse> Responder::get_response(InteractionParameters parameters)
+{
+    if (parameters.use_llama)
     {
-		std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>("");
-		std::thread thread(&Responder::get_llama_response, this, dialogue, response, response_direction, personality, supplemental_info);
+		std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>("", parameters.classification, parameters.response_direction);
+		std::thread thread(&Responder::get_llama_response, this, parameters.dialogue, response, parameters.response_direction, parameters.personality, parameters.supplemental_info);
 		thread.detach();
         return response;
     }
     else
     {
-		return get_canned_response(dialogue, response_direction, supplemental_info);
+		return get_canned_response(parameters);
 	}
 }
 
 
-std::string Responder::get_response_synchronously(const std::string& dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string& supplemental_info, bool use_llama)
+std::string Responder::get_response_synchronously(InteractionParameters parameters)
 {
-	std::shared_ptr<DialogueResponse> response = get_response(dialogue, response_direction, personality, supplemental_info, use_llama);
+	std::shared_ptr<DialogueResponse> response = get_response(parameters);
 	while (!response->get_is_complete())
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 	return response->get_response();
 }
 
-void Responder::get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info) {
+void Responder::get_llama_response(InteractionParameters parameters, std::shared_ptr<DialogueResponse> response)
+{
+	const std::string &dialogue = parameters.dialogue;
+	DialogueResponseDirection response_direction = parameters.response_direction;
+	Personality personality = parameters.personality;
+	const std::string &supplemental_info = parameters.supplemental_info;
+
+
     //TODO: Might want to only deallocate and reallocate the context as needed, rather than for each call.
     //DeallocatingWrapper<llama_context, llama_free, decltype(llama_new_context_with_model), llama_model*, llama_context_params> context(llama_new_context_with_model, model, ctx_params);
     //llama_context* ctx = context.get();
@@ -240,8 +248,13 @@ void Responder::do_greet_test()
 
     for (auto d : dialogues)
     {
+		InteractionParameters parameters;
+		parameters.dialogue = d;
+		parameters.response_direction = responses[0];
+		parameters.personality = personality;
+
         std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << build_personality_description(personality) << std::endl;
-        std::cout << "Response: " << get_response_synchronously(d, Greet, personality, "", true) << std::endl << std::endl;
+        std::cout << "Response: " << get_response_synchronously(parameters) << std::endl << std::endl;
     }
 }
 
@@ -255,8 +268,12 @@ void Responder::do_insult_test()
 
     for (auto d : dialogues)
     {
+		InteractionParameters parameters;
+		parameters.dialogue = d;
+		parameters.personality = personality;
+		parameters.response_direction = Deride;
         std::cout << "Dialogue: " << std::left << std::setw(20) << d << "Maturity: " << std::setw(10) << build_personality_description(personality) << std::endl;
-        std::cout << "Response: " << get_response_synchronously(d, Deride, personality, "", true) << std::endl << std::endl;
+        std::cout << "Response: " << get_response_synchronously(parameters) << std::endl << std::endl;
     }
 }
 
@@ -531,7 +548,7 @@ Responder::~Responder() {
 }
 
 
-std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::string &dialogue, DialogueResponseDirection response_direction, const std::string &supplemental_info) {
+std::shared_ptr<DialogueResponse> Responder::get_canned_response(InteractionParameters parameters) {
     std::vector<std::string> greetings = {
         "Hello!",
         "Hi there!",
@@ -595,7 +612,7 @@ std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::stri
     };
 
 	std::vector<std::string> answers = {
-		"Well, I know this much: " + supplemental_info
+		"Well, I know this much: " + parameters.supplemental_info
 	};
 
 	std::vector<std::string> non_responses = {
@@ -619,9 +636,9 @@ std::shared_ptr<DialogueResponse> Responder::get_canned_response(const std::stri
 		{ DialogueResponseDirection::Thank, non_responses }
     };
 
-    std::vector<std::string> r = responses[response_direction];
+    std::vector<std::string> r = responses[parameters.response_direction];
     int index = rand() % r.size();
-	std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>(r[index]);
+	std::shared_ptr<DialogueResponse> response = std::make_shared<DialogueResponse>(r[index], parameters.classification, parameters.response_direction);
 	response->set_complete();
 	return response;
 }

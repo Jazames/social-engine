@@ -3,11 +3,12 @@
 #include <array>
 
 #pragma warning(disable: 4996)
-#include "common.h"
-#include "llama.h"
+#include "../llamaCpp/common/common.h"
+#include "../llamaCpp/llama.h"
 #include "util.h"
 #include "dialogue.h"
 #include "personality.h"
+#include "interaction.h"
 
 
 
@@ -22,8 +23,8 @@ public:
 		Responder::~Responder();
 	}
 
-	std::shared_ptr<DialogueResponse> get_response(const std::string &dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info = "", bool use_llama = false);
-	std::string get_response_synchronously(const std::string &dialogue, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info = "", bool use_llama = false);
+	std::shared_ptr<DialogueResponse> get_response(InteractionParameters parameters);
+	std::string get_response_synchronously(InteractionParameters parameters);
 
     void do_greet_test();
     void do_insult_test();
@@ -33,8 +34,8 @@ private:
     gpt_params params;
     llama_context* ctx;
 
-    void get_llama_response(const std::string &dialogue, std::shared_ptr<DialogueResponse> response, DialogueResponseDirection response_direction, Personality personality, const std::string &supplemental_info = "");
-	std::shared_ptr<DialogueResponse> get_canned_response(const std::string &dialogue, DialogueResponseDirection response_direction, const std::string &supplemental_info = "");
+    void get_llama_response(InteractionParameters parameters, std::shared_ptr<DialogueResponse> response);
+	std::shared_ptr<DialogueResponse> get_canned_response(InteractionParameters parameters);
 
     const std::string model_file_path;
 
