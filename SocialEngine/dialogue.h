@@ -33,7 +33,7 @@ inline std::string get_response_direction_name(DialogueResponseDirection directi
 		"Decline",
 		"Sabotage",
 		"Thank"
-	 };
+	};
 	return dialoge_response_direction_names[direction];
 }
 
