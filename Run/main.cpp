@@ -36,8 +36,12 @@ int main()
 	Personality personality;
 	personality.personality_override = "a child who loves all cute things ";
     Embedder::get_instance().get_embedding(dialogue);
-    auto classification = BertClassifier::get_instance().get_classification(dialogue);
-    std::string response = Responder::get_instance().get_response_synchronously(dialogue, Greet, personality);
+	auto classification = BertClassifier::get_instance().get_classification(dialogue);
+	InteractionParameters warm_up_params;
+	warm_up_params.dialogue = dialogue;
+	warm_up_params.personality = personality;
+	warm_up_params.classification = classification;
+    std::string response = Responder::get_instance().get_response_synchronously(warm_up_params);
     std::cout << "Dialogue to classify: " << dialogue << std::endl;
     std::cout << "Classification is: " << ToString(classification) << std::endl;
     std::cout << "Response is: " << response << std::endl;
@@ -50,7 +54,12 @@ int main()
     Personality npc_personality = Personality();
     Knowledge knowledge = Knowledge();
     npc_personality.maturity = 0.3;
-	response = get_npc_response_synchronous(player_words, player_appearance, npc_personality, knowledge);
+	InteractionParameters params;
+	params.dialogue = player_words;
+	params.appearance = player_appearance;
+	params.personality = npc_personality;
+	params.knowledge = knowledge;
+	response = get_npc_response_synchronous(params);
 
     std::cout << "NPC response: " << response << std::endl;
 

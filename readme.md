@@ -43,5 +43,27 @@ A lot of NPC interaction in games is clunky and takes the player out of real-tim
 ### Meaning
 Many NPCs seem flat and dull because their only meaning in the game seems to be to sell the player weapons or buy the players hoarded loot. To seem more alive, each NPC needs a goal or a purpose that they're working for, along with social connections to other NPCs. Those social connections should include some friends, some enemies, and things that the NPC knows about the world. These things will be necessary for the Social Engine to function well. 
 
-### Game Pitch -- Playground Personal Investigator
-Solve mysteries on the playground, get paid in knickacks and coins. 
+# Game Pitch -- Downton Abbey Sim
+One plays as either the Butler or Housekeeper, trying to solve social and resource problems to reach a desired end. (Perhaps aim for different endings and then include stats as well, such as how many people like you at the end)
+
+## Mechanics
+- Define different sorts of tasks in the game, some generalized/templatized some specific, that can be taken by characters and will further the story or meet goals. The tasks are activated when a character makes a request that matches the task description (use sentence embeddings to compare). 
+    - For example, a generalized task to give a specific message to a specific person. This task would have 3 parameters, the sender, the receiver, and the message. 
+    - Another example, a specific task, would be to invite travelers for dinner. It might be specific to a unique sort of traveler, and it would kick off some other tasks for dinner preparations, etc. 
+    - Then when any NPC is given the task (via the request interaction), they work towards doing that task.
+    - Tasks probably need to come with priorities so an NPC knows which to work on first.
+    - Will also probably need some low priority tasks for every NPC so that they're relatively busy, these tasks would be chore type stuff. Possibly bunch these tasks into roles to group them for easy assignment?
+    - For this game, might make it possible for NPCs to pass tasks to servants in lower social rank?
+    - The sabotage action might be to accept the task but then never do it? Perhaps some specific/special tasks have some prescribed sabotage associated.
+    - Might need to modify the request interaction to account for the case when a request is made but the request doesn't match a known task.
+
+## Story Events
+- Definitely want some sort of sexual scandal as part of it. Perhaps a nobel daughter and a lady's maid having the hotts for the Groom (stable boy) and under gardener.
+
+
+## Things still under consideration
+- Need to make it more of a game and less of a simulator
+    - Perhaps one thing to gameify would be to put some problem causers in the game that don't do their jobs? Like a footman who never delivers messages.
+- How to give the NPCs their own goals and let them take actions of their own volition
+- Need to come up with more social problems. Resource problems are easy
+

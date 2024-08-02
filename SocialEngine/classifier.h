@@ -9,7 +9,9 @@ enum DialogueType {
     Insult,
     Request,
     Question,
-    Statement
+    Statement,
+    Joke,
+    Salutation
 };
 
 inline std::string get_dialogue_type_name(DialogueType type) {
@@ -20,7 +22,9 @@ inline std::string get_dialogue_type_name(DialogueType type) {
 		"Insult",
 		"Request",
 		"Question",
-		"Statement"
+		"Statement",
+		"Joke",
+		"Salutation"
 	};
 	return dialogue_type_names[type];
 }
