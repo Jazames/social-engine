@@ -10,6 +10,8 @@ set(SOCIAL_ENGINE_TEST_SOURCES
     statement_disposition_direction_test.cpp
     request_disposition_direction_test.cpp
     compliment_disposition_direction_test.cpp
+    joke_disposition_direction_test.cpp
+    salutation_disposition_direction_test.cpp
     embedding_test.cpp
     classifier_test.cpp
     response_test.cpp
