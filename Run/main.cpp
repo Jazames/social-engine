@@ -4,9 +4,9 @@
 
 #include "social.h"
 #include "classifier.h"
-#include "bert_classifier.h"
+#include "llama_classifier.h"
 #include "responder.h"
-#include "llama_embed.h"
+#include "bert_embed.h"
 
 
 
@@ -35,7 +35,7 @@ int main()
     std::string dialogue = "Hello fine kitty.";// "Are you a whore?";
 	Personality personality;
 	personality.personality_override = "a child who loves all cute things ";
-    Embedder::get_instance().get_embedding(dialogue);
+    BertEmbedder::get_instance().get_embedding(dialogue);
 	auto classification = BertClassifier::get_instance().get_classification(dialogue);
 	InteractionParameters warm_up_params;
 	warm_up_params.dialogue = dialogue;

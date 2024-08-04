@@ -65,8 +65,11 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
 
     // number of tokens to keep when resetting context
-    if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size() || params.instruct) {
+    if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size()) {
         params.n_keep = (int)embd_inp.size();
+    }
+    else {
+        params.n_keep += add_bos; // always keep the BOS token
     }
 
     bool input_echo = true;
@@ -132,7 +135,7 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
                     n_past, n_left, n_ctx, params.n_keep, n_discard);
 
                 llama_kv_cache_seq_rm(ctx, 0, params.n_keep + 1, params.n_keep + n_discard + 1);
-                llama_kv_cache_seq_shift(ctx, 0, params.n_keep + 1 + n_discard, n_past, -n_discard);
+                llama_kv_cache_seq_add(ctx, 0, params.n_keep + 1 + n_discard, n_past, -n_discard);
 
                 n_past -= n_discard;
 
@@ -476,19 +479,15 @@ std::tuple<struct llama_model *, struct llama_context *> do_a_model_load(gpt_par
 	for (unsigned int i = 0; i < params.lora_adapter.size(); ++i) {
 		const std::string &lora_adapter = std::get<0>(params.lora_adapter[i]);
 		float lora_scale = std::get<1>(params.lora_adapter[i]);
-		int err = llama_model_apply_lora_from_file(model,
-				lora_adapter.c_str(),
-				lora_scale,
-				((i > 0) || params.lora_base.empty())
-						? NULL
-						: params.lora_base.c_str(),
-				params.n_threads);
-		if (err != 0) {
+
+        auto adapter = llama_lora_adapter_init(model, lora_adapter.c_str());
+        if (adapter == nullptr) {
 			fprintf(stderr, "%s: error: failed to apply lora adapter\n", __func__);
 			llama_free(lctx);
 			llama_free_model(model);
 			return std::make_tuple(nullptr, nullptr);
 		}
+        llama_lora_adapter_set(lctx, adapter, lora_scale);
 	}
 
 	if (params.ignore_eos) {
@@ -514,12 +513,13 @@ std::tuple<struct llama_model *, struct llama_context *> do_a_model_load(gpt_par
 Responder::Responder() {
     // Initialization logic
     params.sparams.temp = 0.8f;
-    params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
+    params.model = "C:\\Users\\James\\source\\projects\\models\\llama-3.1-8B.ggml";
     params.seed = time(NULL);;
 
     // init LLM
-    llama_backend_init(params.numa);
-
+    llama_backend_init();
+    llama_numa_init(params.numa);
+    
 
     
     std::tie(model, ctx) = do_a_model_load(params);

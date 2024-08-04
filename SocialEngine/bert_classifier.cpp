@@ -104,3 +104,4 @@ std::vector<float> BertClassifier::normalize(const std::vector<float>& vec) cons
     return normalizedVec;
 }
 
+

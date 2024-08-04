@@ -4,8 +4,8 @@
 #include<vector>
 
 
-#include "bert.h"
-//#include "ggml.h"
+#include "common.h"
+#include "llama.h"
 
 
 class BertEmbedder {
@@ -21,9 +21,10 @@ public:
 		BertEmbedder::~BertEmbedder();
 	}
 
-private:
-    bert_ctx * bctx;
-    bert_params params;
+private:    
+    llama_model* model;
+    llama_context* ctx;
+    gpt_params params;
     size_t embedding_max_size;
 
     

@@ -18,6 +18,10 @@ public:
 
     DialogueType get_classification(const std::string& dialogue);
 
+    void deinit() {
+        Classifier::~Classifier();
+    }
+
 private:
     llama_model* model;
     llama_context* ctx;

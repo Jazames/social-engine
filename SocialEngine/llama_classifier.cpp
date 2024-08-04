@@ -28,8 +28,11 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
 
 
     // number of tokens to keep when resetting context
-    if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size() || params.instruct) {
+    if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size()) {
         params.n_keep = (int)embd_inp.size();
+    }
+    else {
+        params.n_keep += add_bos; // always keep the BOS token
     }
 
     bool input_echo = true;
@@ -89,7 +92,7 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
                     n_past, n_left, n_ctx, params.n_keep, n_discard);
 
                 llama_kv_cache_seq_rm(ctx, 0, params.n_keep + 1, params.n_keep + n_discard + 1);
-                llama_kv_cache_seq_shift(ctx, 0, params.n_keep + 1 + n_discard, n_past, -n_discard);
+                llama_kv_cache_seq_add(ctx, 0, params.n_keep + 1 + n_discard, n_past, -n_discard);
 
                 n_past -= n_discard;
 
@@ -213,11 +216,12 @@ DialogueType Classifier::get_classification(const std::string& dialogue)
 Classifier::Classifier() {
     // Initialization logic
     params.sparams.temp = 0.0f;
-    params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
+    params.model = "C:\\Users\\James\\source\\projects\\models\\classifier.ggml";
     params.seed = time(NULL);;
 
     // init LLM
-    llama_backend_init(params.numa);
+    llama_backend_init();
+    llama_numa_init(params.numa);
 
 
     std::tie(model, ctx) = llama_init_from_gpt_params(params);

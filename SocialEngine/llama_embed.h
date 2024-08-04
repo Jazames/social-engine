@@ -17,6 +17,9 @@ public:
 
     std::vector<float> get_embedding(const std::string& prompt);
 
+    void deinit() {
+        Embedder::~Embedder();
+    }
 private:
     llama_model* model;
     llama_context* ctx;

@@ -4,7 +4,7 @@
 
 #pragma warning(disable: 4996)
 #include "../llamaCpp/common/common.h"
-#include "../llamaCpp/llama.h"
+#include "llama.h"
 #include "util.h"
 #include "dialogue.h"
 #include "personality.h"

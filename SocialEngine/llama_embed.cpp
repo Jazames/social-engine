@@ -52,11 +52,13 @@ std::vector<float> Embedder::get_embedding(const std::string& prompt)
 Embedder::Embedder() {
     // Initialization logic
     params.embedding = true;
-    params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
+    params.model = "C:\\Users\\James\\source\\projects\\models\\classifier.ggml";
+    //params.model = "C:\\Users\\James\\source\\repos\\llama.cpp\\models\\llama-2-13b-chat\\ggml-model-q4_0.gguf";
     params.seed = time(NULL);;
 
     // init LLM
-    llama_backend_init(params.numa);
+    llama_backend_init();
+    llama_numa_init(params.numa);
 
 
     std::tie(model, ctx) = llama_init_from_gpt_params(params);

@@ -11,17 +11,17 @@
 
 void init_social_engine()
 {
-	BertClassifier::get_instance();
+    BertClassifier::get_instance();
 	GlobalKnowledge::get_instance();
 	Responder::get_instance();
 }
 
 void deinit_social_engine()
 {
-	BertClassifier::get_instance().deinit();
+    BertClassifier::get_instance().deinit();
 	GlobalKnowledge::get_instance().deinit();
 	Responder::get_instance().deinit();
-	BertEmbedder::get_instance().deinit();
+    BertEmbedder::get_instance().deinit();
 }
 
 Disposition get_disposition(Appearance appearance, Knowledge knowledge, Personality personality)
