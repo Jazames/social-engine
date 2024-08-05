@@ -3,17 +3,10 @@
 
 std::vector<float> BertEmbedder::get_embedding(const std::string& prompt) 
 {
-
-
-
-
-
-    //*
     params.prompt = prompt.c_str();
 
     // tokenize the prompt
-    std::vector<int32_t> tokens = llama_tokenize(ctx, prompt, true, false);
-
+    std::vector<int32_t> tokens = llama_tokenize(ctx, prompt, true, true);
 
     const int n_embd = llama_n_embd(model);
     std::vector<float> embeddings(n_embd, 0);
@@ -37,7 +30,6 @@ std::vector<float> BertEmbedder::get_embedding(const std::string& prompt)
     llama_batch_free(batch);
 
     return embeddings;
-    //*/
 }
 
 BertEmbedder::BertEmbedder() {
@@ -52,9 +44,15 @@ BertEmbedder::BertEmbedder() {
     llama_backend_init();
     llama_numa_init(params.numa);
 
-    std::tie(model, ctx) = llama_init_from_gpt_params(params);
+    llama_init_result init_result = llama_init_from_gpt_params(params);
+    model = init_result.model;
+    ctx = init_result.context;
     if (model == NULL) {
         fprintf(stderr, "%s: error: unable to load model\n", __func__);
+        exit(1);
+    }
+    if (ctx == NULL) {
+        fprintf(stderr, "%s: error: unable to load context\n", __func__);
         exit(1);
     }
 }

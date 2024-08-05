@@ -4,7 +4,7 @@
 
 #include "social.h"
 #include "classifier.h"
-#include "llama_classifier.h"
+#include "bert_classifier.h"
 #include "responder.h"
 #include "bert_embed.h"
 

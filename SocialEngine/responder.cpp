@@ -60,17 +60,42 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
     const bool add_bos = llama_vocab_type(model) == LLAMA_VOCAB_TYPE_SPM;
 
-    std::vector<llama_token> embd_inp;
-    embd_inp = ::llama_tokenize(ctx, params.prompt, add_bos, true);
+    std::vector<llama_token> tokens_list;
+    tokens_list = llama_tokenize(ctx, params.prompt, true, true);
 
 
-    // number of tokens to keep when resetting context
-    if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size()) {
-        params.n_keep = (int)embd_inp.size();
+    //// number of tokens to keep when resetting context
+    //if (params.n_keep < 0 || params.n_keep >(int) embd_inp.size()) {
+    //    params.n_keep = (int)embd_inp.size();
+    //}
+    //else {
+    //    params.n_keep += add_bos; // always keep the BOS token
+    //}
+
+
+
+    // create a llama_batch with size 512
+    // we use this object to submit token data for decoding
+
+    llama_batch batch = llama_batch_init(2048, 0, 1);
+
+    // evaluate the initial prompt
+    std::string prompty = "";
+    for (size_t i = 0; i < tokens_list.size(); i++) {
+        llama_batch_add(batch, tokens_list[i], i, { 0 }, false);
+        prompty += llama_token_to_piece(ctx, tokens_list[i]);
     }
-    else {
-        params.n_keep += add_bos; // always keep the BOS token
+
+    // llama_decode will output logits only for the last token of the prompt
+    batch.logits[batch.n_tokens - 1] = true;
+
+    if (llama_decode(ctx, batch) != 0) {
+        LOG_TEE("%s: llama_decode() failed\n", __func__);
+        response->append_response("...");
+        response->set_complete();
+        return;
     }
+
 
     bool input_echo = true;
 
@@ -81,14 +106,9 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
 
     struct llama_sampling_context* ctx_sampling = llama_sampling_init(sparams);
-    std::vector<llama_token> embd;
+    std::vector<llama_token> response_tokens;
 
 
-    std::string prompty = "";
-    for (auto i : embd_inp)
-    {
-        prompty += llama_token_to_piece(ctx, i);
-    }
 
     //std::string response;
     int max_generated_tokens = 16;
@@ -104,15 +124,15 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 		}
 
         // predict
-        if (!embd.empty()) {
+        if (!response_tokens.empty()) {
             // Note: n_ctx - 4 here is to match the logic for commandline prompt handling via
             // --prompt or --file which uses the same value.
             int max_embd_size = n_ctx - 4;
 
             // Ensure the input doesn't exceed the context size by truncating embd_inp if necessary.
-            if ((int)embd.size() > max_embd_size) {
-                const int skipped_tokens = (int)embd.size() - max_embd_size;
-                embd.resize(max_embd_size);
+            if ((int)response_tokens.size() > max_embd_size) {
+                const int skipped_tokens = (int)response_tokens.size() - max_embd_size;
+                response_tokens.resize(max_embd_size);
 
                 printf("<<input too long: skipped %d token%s>>", skipped_tokens, skipped_tokens != 1 ? "s" : "");
                 fflush(stdout);
@@ -122,7 +142,7 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
             // if we run out of context:
             // - take the n_keep first tokens from the original prompt (via n_past)
             // - take half of the last (n_ctx - n_keep) tokens and recompute the logits in batches
-            if (n_past + (int)embd.size() > n_ctx) {
+            if (n_past + (int)response_tokens.size() > n_ctx) {
                 if (params.n_predict == -2) {
                     LOG_TEE("\n\n%s: context full and n_predict == -%d => stopping\n", __func__, params.n_predict);
                     break;
@@ -141,19 +161,19 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
                 LOG("after swap: n_past = %d, n_past_guidance = %d\n", n_past, n_past_guidance);
 
-                LOG("embd: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, embd).c_str());
+                LOG("embd: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, response_tokens).c_str());
 
             }
 
-            for (int i = 0; i < (int)embd.size(); i += params.n_batch) {
-                int n_eval = (int)embd.size() - i;
+            for (int i = 0; i < (int)response_tokens.size(); i += params.n_batch) {
+                int n_eval = (int)response_tokens.size() - i;
                 if (n_eval > params.n_batch) {
                     n_eval = params.n_batch;
                 }
 
-                LOG("eval: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, embd).c_str());
+                LOG("eval: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, response_tokens).c_str());
 
-                if (llama_decode(ctx, llama_batch_get_one(&embd[i], n_eval, n_past, 0))) {
+                if (llama_decode(ctx, llama_batch_get_one(&response_tokens[i], n_eval, n_past, 0))) {
                     LOG_TEE("%s : failed to eval\n", __func__);
 					response->append_response("...");
 					response->set_complete();
@@ -167,11 +187,11 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
             }
         }
 
-        embd.clear();
+        response_tokens.clear();
 
 
 
-        if ((int)embd_inp.size() <= n_consumed) {
+        if ((int)tokens_list.size() <= n_consumed) {
 
             const llama_token id = llama_sampling_sample(ctx_sampling, ctx, NULL);
 
@@ -179,7 +199,7 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
             LOG("last: %s\n", LOG_TOKENS_TOSTR_PRETTY(ctx, ctx_sampling->prev).c_str());
 
-            embd.push_back(id);
+            response_tokens.push_back(id);
 			const std::string token_str = llama_token_to_piece(ctx, id);
 			response->append_response(token_str);
             //response += token_str;
@@ -194,16 +214,16 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
         }
         else {
             // some user input remains from prompt or interaction, forward it to processing
-            LOG("embd_inp.size(): %d, n_consumed: %d\n", (int)embd_inp.size(), n_consumed);
-            while ((int)embd_inp.size() > n_consumed) {
-                embd.push_back(embd_inp[n_consumed]);
+            LOG("tokens_list.size(): %d, n_consumed: %d\n", (int)tokens_list.size(), n_consumed);
+            while ((int)tokens_list.size() > n_consumed) {
+                response_tokens.push_back(tokens_list[n_consumed]);
 
                 // push the prompt in the sampling context in order to apply repetition penalties later
                 // for the prompt, we don't apply grammar rules
-                llama_sampling_accept(ctx_sampling, ctx, embd_inp[n_consumed], false);
+                llama_sampling_accept(ctx_sampling, ctx, tokens_list[n_consumed], false);
 
                 ++n_consumed;
-                if ((int)embd.size() >= params.n_batch) {
+                if ((int)response_tokens.size() >= params.n_batch) {
                     break;
                 }
             }
@@ -231,7 +251,7 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 
 
         // end of text token
-        if (!embd.empty() && embd.back() == llama_token_eos(model)) {
+        if (!response_tokens.empty() && response_tokens.back() == llama_token_eos(model)) {
 			response->set_complete();
 			return;
             //return response;
@@ -242,6 +262,45 @@ void Responder::get_llama_response(InteractionParameters parameters, std::shared
 	response->set_complete();
     //return response + "...";
 }
+
+
+Responder::Responder() {
+    // Initialization logic
+    params.sparams.temp = 0.4f;
+    params.model = "C:\\Users\\James\\source\\projects\\models\\responder.ggml";
+    params.seed = time(NULL);;
+
+    // init LLM
+    llama_backend_init();
+    llama_numa_init(params.numa);
+
+    llama_init_result init_result = llama_init_from_gpt_params(params);
+    model = init_result.model;
+    ctx = init_result.context;
+    if (model == NULL) {
+        fprintf(stderr, "%s: error: unable to load model\n", __func__);
+        exit(1);
+    }
+    if (ctx == NULL) {
+        fprintf(stderr, "%s: error: unable to load context\n", __func__);
+        exit(1);
+    }
+}
+
+Responder::~Responder() {
+    // Deinitialization logic
+    if (ctx != nullptr)
+    {
+        llama_free(ctx);
+        ctx = nullptr;
+    }
+    if (model != nullptr) {
+        llama_free_model(model);
+        model = nullptr;
+    }
+    llama_backend_free();
+}
+
 
 void Responder::do_greet_test()
 {
@@ -508,45 +567,6 @@ std::tuple<struct llama_model *, struct llama_context *> do_a_model_load(gpt_par
 
 	return std::make_tuple(model, lctx);
 }
-
-
-Responder::Responder() {
-    // Initialization logic
-    params.sparams.temp = 0.8f;
-    params.model = "C:\\Users\\James\\source\\projects\\models\\llama-3.1-8B.ggml";
-    params.seed = time(NULL);;
-
-    // init LLM
-    llama_backend_init();
-    llama_numa_init(params.numa);
-    
-
-    
-    std::tie(model, ctx) = do_a_model_load(params);
-    if (model == NULL) {
-		std::cout << "Error: unable to load model" << std::endl;
-        exit(1);
-    }
-    if (ctx == NULL) {
-		std::cout << "Error: unable to load model context" << std::endl;
-        exit(1);
-    }
-}
-
-Responder::~Responder() {
-    // Deinitialization logic
-	if (ctx != nullptr)
-	{
-		llama_free(ctx);
-		ctx = nullptr;
-	}
-	if (model != nullptr) {
-		llama_free_model(model);
-		model = nullptr;
-	}
-    llama_backend_free();
-}
-
 
 std::shared_ptr<DialogueResponse> Responder::get_canned_response(InteractionParameters parameters) {
     std::vector<std::string> greetings = {
